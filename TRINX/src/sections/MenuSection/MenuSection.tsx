@@ -1,8 +1,15 @@
  "use client";
 
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/Container";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // نفس وجهة زرار "View All" بالظبط — كل الكروت هتوديك على /shop
 const SHOP_HREF = "/shop";
@@ -11,44 +18,44 @@ const PRODUCTS = [
   {
     name: "JONES",
     flavor: "BERRY LEMONADE",
+    slug: "berry-lemonade",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image:
-      "/images/BL_12ozBOTTLE_RGB_1024x1024_8ffd2366-6859-40c6-b8d1-df713a652b16-removebg-preview.png",
+    image: "/images/BERRYblue.png",
   },
   {
     name: "JONES",
     flavor: "ROOT BEER",
+    slug: "root-beer",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image:
-      "/images/RB_12ozBOTTLE_RGB_1024x1024_85ba6c26-3b04-4458-bfa3-57bb7d34ded3-removebg-preview.png",
+    image: "/images/chocolate.png",
   },
   {
     name: "JONES",
     flavor: "GREEN APPLE",
+    slug: "green-apple",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image:
-      "/images/GA_12ozBOTTLE_RGB_1024x1024_40058c8f-c71d-4d42-a635-37624f0d31ac-removebg-preview.png",
+    image: "/images/green.png",
   },
   {
     name: "JONES",
     flavor: "STRAWBERRY LIME",
+    slug: "strawberry-lime",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image:
-      "/images/SLIME_12ozBOTTLE_RGB_1024x1024_9846967e-8df6-4c19-829a-a50af4dc3fe6-removebg-preview.png",
+    image: "/images/red.png",
   },
   {
     name: "JONES",
     flavor: "ORANGE & CREAM",
+    slug: "orange-cream",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image:
-      "/images/OC_12ozBOTTLE_RGB_1024x1024_1ebaae76-3280-4401-817e-aa5b61ae9ca5-removebg-preview.png",
+    image: "/images/orange.png",
   },
   {
     name: "JONES",
     flavor: "CREAM SODA",
+    slug: "cream-soda",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image:
-      "/images/CREAM_12ozBOTTLE_RGB_1024x1024_6a616cd7-6659-49bb-835c-2bfff120b295-removebg-preview.png",
+    image: "/images/CREAMwhite.png",
   },
 ];
 
@@ -138,16 +145,83 @@ const RIBBON_CLASSES = [
   "duration-300",
 ].join(" ");
 
+// بتقسم أي نص لحروف، كل حرف في span لوحده، جوه container بيقص الطالع (overflow-hidden)
+// عشان تأثير النزول من تحت يبان نضيف ومقصوص صح
+function splitToChars(text: string) {
+  return text.split("").map((char, i) => (
+    <span
+      key={i}
+      className="inline-block overflow-hidden"
+      style={{ verticalAlign: "top" }}
+    >
+      <span className="split-char inline-block will-change-transform">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    </span>
+  ));
+}
 export default function MenuSection() {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const headerWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const titleChars = titleRef.current?.querySelectorAll(".split-char");
+      const subtitleChars = subtitleRef.current?.querySelectorAll(".split-char");
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: headerWrapRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      if (titleChars) {
+        tl.fromTo(
+          titleChars,
+          { y: "110%", filter: "blur(14px)", opacity: 0 },
+          {
+            y: "0%",
+            filter: "blur(0px)",
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            stagger: 0.025,
+          }
+        );
+      }
+
+      if (subtitleChars) {
+        tl.fromTo(
+          subtitleChars,
+          { y: "110%", filter: "blur(10px)", opacity: 0 },
+          {
+            y: "0%",
+            filter: "blur(0px)",
+            opacity: 1,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.012,
+          },
+          "-=0.5"
+        );
+      }
+    }, headerWrapRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section className="w-full bg-white py-16">
       <Container>
         {/* ── HEADER ── */}
-        <div className="flex items-end justify-between mb-10">
+        <div ref={headerWrapRef} className="flex items-end justify-between mb-10">
           <div className="flex flex-col gap-1">
-            <h2 className="text-headline-lg text-black">THE ESSENTIALS</h2>
-            <p className="text-label-sm uppercase tracking-widest text-gray-400">
-              Available for nationwide delivery
+            <h2 ref={titleRef} className="text-headline-lg text-black">{splitToChars("THE ESSENTIALS")}</h2>
+            <p ref={subtitleRef} className="text-label-sm uppercase tracking-widest text-gray-400">
+              {splitToChars("Available for nationwide delivery")}
             </p>
           </div>
           <a
@@ -161,7 +235,12 @@ export default function MenuSection() {
         {/* ── GRID ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {PRODUCTS.map((product) => (
-            <Link key={product.flavor} href={SHOP_HREF} className={CARD_CLASSES}>
+            <Link
+              key={product.flavor}
+              href={`${SHOP_HREF}#${product.slug}`}
+              scroll={false}
+              className={CARD_CLASSES}
+            >
               {/* IMAGE */}
               <div className={IMAGE_WRAP_CLASSES}>
                 <Image

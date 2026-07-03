@@ -4,7 +4,7 @@ import Header from "@/layout/Header/Header";
 import Footer from "@/layout/Footer/";
 import LinesScroll from "@/LinesScroll";
 import GridOverlayFONT from "@/GridOverlayFONT";
- 
+import Intro from "@/intro";
 import PageTransition from "@/PageTransitionRout";
 import HoverMouse from "@/hoverMous";
 
@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={hankenGrotesk.className}>
-        
+        <Intro />
         <LinesScroll>
           <Header />
           <PageTransition>

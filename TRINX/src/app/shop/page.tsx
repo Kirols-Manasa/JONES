@@ -1,4 +1,4 @@
-  "use client";
+ "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -17,56 +17,62 @@ const PRODUCTS = [
   {
     name: "JONES",
     flavor: "BERRY LEMONADE",
+    slug: "berry-lemonade",
     size: "12-PACK / 12OZ GLASS BOTTLES",
     price: "$29.99",
     desc: "Bright, tangy, and refreshingly bold. A summer classic brewed with real berry extracts and a squeeze of lemonade.",
     notes: ["Natural flavors", "No preservatives", "Cane sugar sweetened"],
-    image: "/images/BL_12ozBOTTLE_RGB_1024x1024_8ffd2366-6859-40c6-b8d1-df713a652b16-removebg-preview.png",
+    image: "/images/BERRYblue.png",
   },
   {
     name: "JONES",
     flavor: "ROOT BEER",
+    slug: "root-beer",
     size: "12-PACK / 12OZ GLASS BOTTLES",
     price: "$29.99",
     desc: "A smooth, classic root beer with hints of vanilla and anise. The kind your grandparents wished they had.",
     notes: ["Caffeine-free", "Aged vanilla extract", "Cane sugar sweetened"],
-    image: "/images/RB_12ozBOTTLE_RGB_1024x1024_85ba6c26-3b04-4458-bfa3-57bb7d34ded3-removebg-preview.png",
+    image: "/images/chocolate.png",
   },
   {
     name: "JONES",
     flavor: "GREEN APPLE",
+    slug: "green-apple",
     size: "12-PACK / 12OZ GLASS BOTTLES",
     price: "$29.99",
     desc: "Crisp, tart, and impossibly refreshing. Made with real green apple juice for a flavor that actually tastes like the fruit.",
     notes: ["Real apple juice", "No artificial colors", "Cane sugar sweetened"],
-    image: "/images/GA_12ozBOTTLE_RGB_1024x1024_40058c8f-c71d-4d42-a635-37624f0d31ac-removebg-preview.png",
+    image: "/images/green.png",
   },
   {
     name: "JONES",
     flavor: "STRAWBERRY LIME",
+    slug: "strawberry-lime",
     size: "12-PACK / 12OZ GLASS BOTTLES",
     price: "$29.99",
     desc: "Ripe strawberries meet zesty lime in a sparkling balance that's equal parts sweet and citrusy.",
     notes: ["Real fruit extracts", "No preservatives", "Cane sugar sweetened"],
-    image: "/images/SLIME_12ozBOTTLE_RGB_1024x1024_9846967e-8df6-4c19-829a-a50af4dc3fe6-removebg-preview.png",
+    image: "/images/red.png",
   },
   {
     name: "JONES",
     flavor: "ORANGE & CREAM",
+    slug: "orange-cream",
     size: "12-PACK / 12OZ GLASS BOTTLES",
     price: "$29.99",
     desc: "The nostalgia of an orange creamsicle, bottled. Velvety smooth with a bright citrus finish.",
     notes: ["Cream base blend", "Natural orange oils", "Cane sugar sweetened"],
-    image: "/images/OC_12ozBOTTLE_RGB_1024x1024_1ebaae76-3280-4401-817e-aa5b61ae9ca5-removebg-preview.png",
+    image: "/images/orange.png",
   },
   {
     name: "JONES",
     flavor: "CREAM SODA",
+    slug: "cream-soda",
     size: "12-PACK / 12OZ GLASS BOTTLES",
     price: "$29.99",
     desc: "Pure, velvety cream soda with a delicate vanilla warmth. Simple, indulgent, and endlessly drinkable.",
     notes: ["Madagascar vanilla", "Smooth finish", "Cane sugar sweetened"],
-    image: "/images/CREAM_12ozBOTTLE_RGB_1024x1024_6a616cd7-6659-49bb-835c-2bfff120b295-removebg-preview.png",
+    image: "/images/CREAMwhite.png",
   },
 ];
 
@@ -329,6 +335,41 @@ function ProductCardDesktop({ product }: { product: typeof PRODUCTS[0] }) {
 export default function ShopPage() {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
 
+  // لما اليوزر ييجي من الهيرو بلينك فيه #slug، نستنى لينيس يجهز ونعمل scroll للقسم المطلوب
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+
+    let attempts = 0;
+    const maxAttempts = 50; // 50 * 50ms = 2.5s كحد أقصى استنى فيه لينيس
+
+    const tryScroll = () => {
+      const target = document.getElementById(hash);
+      const lenis = (window as unknown as Record<string, any>).lenis;
+
+      if (!target) {
+        attempts++;
+        if (attempts < maxAttempts) setTimeout(tryScroll, 50);
+        return;
+      }
+
+      if (lenis && typeof lenis.scrollTo === "function") {
+        lenis.scrollTo(target, { immediate: false, offset: 0 });
+      } else if (attempts < maxAttempts) {
+        // لينيس لسه مجهزش، جرب تاني
+        attempts++;
+        setTimeout(tryScroll, 50);
+      } else {
+        // فشلنا نلاقي لينيس، نعمل scroll عادي كحل أخير
+        target.scrollIntoView({ behavior: "auto" });
+      }
+    };
+
+    // تأخير بسيط الأول عشان الصفحة تخلص render
+    const initialTimeout = setTimeout(tryScroll, 80);
+    return () => clearTimeout(initialTimeout);
+  }, []);
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -342,9 +383,10 @@ export default function ShopPage() {
         {PRODUCTS.map((product, i) => (
           <div
             key={product.flavor}
+            id={product.slug}
             ref={(el) => { sectionsRef.current[i] = el; }}
             className="w-full border-b border-black/10"
-            style={{ height: "100svh" }}
+            style={{ height: "100svh", scrollMarginTop: "0px" }}
           >
             <Container className="h-full">
               <ProductCardMobile product={product} />
