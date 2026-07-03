@@ -12,43 +12,34 @@ export default function Hero() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const lines = containerRef.current?.querySelectorAll("[data-reveal]");
-      const paragraph = containerRef.current?.querySelector("[data-hero-paragraph]");
-      const cta = containerRef.current?.querySelector("[data-hero-cta]");
+       const paragraph = containerRef.current?.querySelector<HTMLElement>("[data-hero-paragraph]");
+const cta = containerRef.current?.querySelector<HTMLElement>("[data-hero-cta]");
 
-      // التايم لاين بيتعمل "paused" من الأول، ومش بيشتغل غير لما الانترو يخلص
-      const tl = gsap.timeline({ paused: true });
+      // ✅ مش محتاج paused: true ولا أي علاقة بالانترو
+      // الـ globalTimeline هو اللي بيتحكم — لو الانترو لسه شغال، الـ tl دي هتتعمل
+      // بس مش هتتحرك غير لما الانترو يعمل resume()
+      const tl = gsap.timeline();
 
       lines?.forEach((line, i) => {
         tl.fromTo(
           line,
           { clipPath: "inset(0 100% 0 0)", x: -14, skewX: -4 },
-          { clipPath: "inset(0 0% 0 0)", x: 0, skewX: 0, duration: 0.95, ease: "power4.inOut" },
+          {
+            clipPath: "inset(0 0% 0 0)",
+            x: 0,
+            skewX: 0,
+            duration: 0.95,
+            ease: "power4.inOut",
+          },
           i * 0.16
         );
       });
-
-      tl.from(paragraph, { opacity: 0, y: 12, duration: 0.55, ease: "power2.out" }, "-=0.35").from(
-        cta,
-        { opacity: 0, y: 10, duration: 0.45, ease: "power2.out" },
-        "-=0.25"
-      );
-
-      // لو الانترو أصلاً خلص قبل ما الـ Hero يتركب (احتياطي)، شغّله على طول
-      const alreadyDone = document.documentElement.dataset.introDone === "true";
-
-      function playTimeline() {
-        tl.play();
-      }
-
-      if (alreadyDone) {
-        playTimeline();
-      } else {
-        window.addEventListener("introDone", playTimeline, { once: true });
-      }
-
-      return () => {
-        window.removeEventListener("introDone", playTimeline);
-      };
+if (!paragraph || !cta) return
+      tl.from(
+        paragraph,
+        { opacity: 0, y: 12, duration: 0.55, ease: "power2.out" },
+        "-=0.35"
+      ).from(cta, { opacity: 0, y: 10, duration: 0.45, ease: "power2.out" }, "-=0.25");
     }, containerRef);
 
     return () => ctx.revert();
@@ -61,7 +52,7 @@ export default function Hero() {
           ref={containerRef}
           className="grid grid-cols-1 md:grid-cols-2 min-h-screen items-center gap-10 pt-24 pb-16"
         >
-          {/* LEFT: TEXT + CTA FIXED POSITION FLOW */}
+          {/* LEFT: TEXT + CTA */}
           <div className="flex flex-col justify-center gap-6 h-full">
             <div className="flex flex-col gap-6">
               <h1 className="text-display text-black leading-none">
@@ -91,7 +82,6 @@ export default function Hero() {
               </p>
             </div>
 
-            {/* CTA pinned naturally under content */}
             <div data-hero-cta className="mt-2">
               <Link
                 href="/shop"
@@ -103,12 +93,7 @@ export default function Hero() {
           </div>
 
           {/* RIGHT: IMAGE */}
-          <div
-            className="
-            flex items-center justify-center w-full
-            h-[45vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]
-          "
-          >
+          <div className="flex items-center justify-center w-full h-[45vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]">
             <div className="flex items-center justify-center w-full h-full">
               <Image
                 src="/images/CREAM_12ozBOTTLE_RGB_1024x1024_6a616cd7-6659-49bb-835c-2bfff120b295-removebg-preview.png"
@@ -116,14 +101,7 @@ export default function Hero() {
                 width={700}
                 height={1050}
                 priority
-                className="
-                  object-contain
-                  w-auto
-                  h-full
-                  max-w-full
-                  max-h-full
-                  max-sm:h-[90%]
-                "
+                className="object-contain w-auto h-full max-w-full max-h-full max-sm:h-[90%]"
               />
             </div>
           </div>

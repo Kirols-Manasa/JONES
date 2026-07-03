@@ -2,8 +2,10 @@
 
 import type { RefObject } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
 
 /* =========================================================
    Types
@@ -28,25 +30,46 @@ const NAV_LINKS: NavLink[] = [
   {
     name: "Home",
     href: "/",
-    
   },
   {
     name: "Shop",
     href: "/shop",
-   
   },
   {
     name: "Our Story",
     href: "/#our-story",
-    
   },
 ];
+
+/* =========================================================
+   Desktop Nav Entrance Animation Settings
+   "نزول حقيقي من برة الفريم" — نفس منطق اللوجو، كل لينك
+   بينزل من فوق حافة الهيدر من غير blur، وبيهبط بعد اللوجو
+   بشوية عشان يحصل تتابع (choreography) بين الاتنين.
+========================================================= */
+
+const NAV_ENTRANCE_FROM = {
+  y: -60,
+  opacity: 0,
+};
+
+const NAV_ENTRANCE_TO = {
+  y: 0,
+  opacity: 1,
+  duration: 0.6,
+  ease: "power3.out",
+  stagger: 0.08,
+};
+
+// وقت البداية بالنسبة لبداية أنيميشن اللوجو (Logo.tsx)
+// خليها أكبر من صفر عشان اللينكات تنزل بعد اللوجو بلحظة بسيطة
+const NAV_ENTRANCE_DELAY = 0.55;
 
 /* =========================================================
    Smooth Scroll Helpers
 ========================================================= */
 
- function scrollToId(id: string) {
+function scrollToId(id: string) {
   let attempts = 0;
   const tryScroll = () => {
     const target = document.getElementById(id);
@@ -56,7 +79,7 @@ const NAV_LINKS: NavLink[] = [
         lenis.scrollTo(target, {
           offset: 0,
           duration: 1.4,
-          easing: (t: number) => 1 - Math.pow(1 - t, 2), // نفس الإيزنج المستخدم في مواقع زي Apple/Awwwards-style sites
+          easing: (t: number) => 1 - Math.pow(1 - t, 2),
         });
       } else {
         target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -70,7 +93,7 @@ const NAV_LINKS: NavLink[] = [
   };
   tryScroll();
 }
- 
+
 function scrollToTop() {
   const lenis = (window as any).lenis;
   if (lenis) {
@@ -82,6 +105,7 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 }
+
 function useSmoothAnchorNavigation() {
   const router = useRouter();
   const pathname = usePathname();
@@ -89,7 +113,6 @@ function useSmoothAnchorNavigation() {
   return (e: React.MouseEvent<HTMLAnchorElement>, href: string, onClose?: () => void) => {
     const hashIndex = href.indexOf("#");
 
-    // حالة "Home" (لينك من غير #): لو إحنا بالفعل في الهوم، اسكرول لفوق بنعومة بدل reload
     if (hashIndex === -1) {
       onClose?.();
 
@@ -97,11 +120,9 @@ function useSmoothAnchorNavigation() {
         e.preventDefault();
         scrollToTop();
       }
-      // أي لينك عادي تاني (زي /shop) يمشي بشكل طبيعي بـ Next.js
       return;
     }
 
-    // حالة اللينكات اللي فيها # (زي /#our-story)
     const targetPath = href.slice(0, hashIndex) || "/";
     const id = href.slice(hashIndex + 1);
 
@@ -142,7 +163,7 @@ const DESKTOP_LINK_CLASSES = [
   "duration-200",
 ].join(" ");
 
-const DESKTOP_LINK_TEXT_CLASSES = "relative z-10";
+const DESKTOP_LINK_TEXT_CLASSES = "relative z-10 inline-block";
 
 const DESKTOP_UNDERLINE_CLASSES = [
   "absolute",
@@ -233,7 +254,7 @@ const MOBILE_ICON_CLASSES = [
 ].join(" ");
 
 /* =========================================================
-   Animation Settings
+   Animation Settings (hover)
 ========================================================= */
 
 const DESKTOP_LINK_VARIANTS = {
@@ -314,9 +335,11 @@ const MotionLink = motion(Link);
 function DesktopNavLink({
   link,
   onAnchorClick,
+  textRef,
 }: {
   link: NavLink;
   onAnchorClick: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void;
+  textRef: (el: HTMLSpanElement | null) => void;
 }) {
   return (
     <MotionLink
@@ -330,7 +353,9 @@ function DesktopNavLink({
       transition={DESKTOP_LINK_TRANSITION}
       className={DESKTOP_LINK_CLASSES}
     >
-      <span className={DESKTOP_LINK_TEXT_CLASSES}>{link.name}</span>
+      <span ref={textRef} className={DESKTOP_LINK_TEXT_CLASSES}>
+        {link.name}
+      </span>
 
       <motion.span
         variants={DESKTOP_UNDERLINE_VARIANTS}
@@ -387,7 +412,7 @@ function MobileNavLinkItem({
         onClick={(e) => onAnchorClick(e, link.href, onClose)}
         className={MOBILE_LINK_CLASSES}
       >
-         <span className={`${MOBILE_LINK_TEXT_CLASSES} mobile-link-text`}>{link.name}</span>
+        <span className={`${MOBILE_LINK_TEXT_CLASSES} mobile-link-text`}>{link.name}</span>
 
         <span className={MOBILE_ICON_CLASSES}>{link.icon}</span>
       </Link>
@@ -401,11 +426,34 @@ function MobileNavLinkItem({
 
 export function NavLinks() {
   const handleAnchorClick = useSmoothAnchorNavigation();
+  const textRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    const els = textRefs.current.filter(Boolean) as HTMLSpanElement[];
+    if (!els.length) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(els, NAV_ENTRANCE_FROM);
+      gsap.to(els, {
+        ...NAV_ENTRANCE_TO,
+        delay: NAV_ENTRANCE_DELAY,
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <nav className={DESKTOP_NAV_CLASSES}>
-      {NAV_LINKS.map((link) => (
-        <DesktopNavLink key={link.href} link={link} onAnchorClick={handleAnchorClick} />
+      {NAV_LINKS.map((link, i) => (
+        <DesktopNavLink
+          key={link.href}
+          link={link}
+          onAnchorClick={handleAnchorClick}
+          textRef={(el) => {
+            textRefs.current[i] = el;
+          }}
+        />
       ))}
     </nav>
   );

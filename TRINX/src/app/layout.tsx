@@ -1,11 +1,12 @@
- import Header from "@/layout/Header/Header";
+import "@/styles/globals.css";
+
+import Header from "@/layout/Header/Header";
 import Footer from "@/layout/Footer/";
 import LinesScroll from "@/LinesScroll";
 import GridOverlayFONT from "@/GridOverlayFONT";
-import Intro from "@/intro";
+ 
 import PageTransition from "@/PageTransitionRout";
 import HoverMouse from "@/hoverMous";
-import "@/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={hankenGrotesk.className}>
-        <Intro />
+        
         <LinesScroll>
           <Header />
           <PageTransition>

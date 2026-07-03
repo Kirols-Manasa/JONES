@@ -22,13 +22,14 @@ function rand(min: number, max: number) {
 }
 
 function pickColor() {
-  return PALETTE[(Math.random() * PALETTE.length) | 0];
+   return PALETTE[(Math.random() * PALETTE.length) | 0]!;
 }
 
 export default function HoverMouse() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+     if (!window.matchMedia("(pointer: fine)").matches) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -93,7 +94,7 @@ export default function HoverMouse() {
         width: rand(0.9, 1.3),
         color: pickColor(),
         life: 1,
-        decay: rand(0.08, 0.11),
+        decay: rand(0.12, 0.22),
       });
     }
 
@@ -120,7 +121,7 @@ export default function HoverMouse() {
     function tick() {
       ctx!.clearRect(0, 0, W, H);
       for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
+        const p = particles[i]!;
         p.life -= p.decay;
         if (p.life <= 0) {
           particles.splice(i, 1);

@@ -1,4 +1,4 @@
-{
+ {
   "compilerOptions": {
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -11,7 +11,7 @@
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
-     "checkJs": false,
+    "checkJs": false,
 
     "lib": ["dom", "dom.iterable", "ES2022"],
     "noEmit": true,
@@ -20,6 +20,7 @@
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
     "incremental": true,
+    "ignoreDeprecations": "6.0",
 
     "baseUrl": ".",
     "paths": {

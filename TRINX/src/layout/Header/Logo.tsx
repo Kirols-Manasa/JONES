@@ -1,6 +1,6 @@
  "use client";
 
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
 type LogoProps = {
@@ -30,12 +30,35 @@ const LOGO_HOVER_OUT = {
 };
 
 /* =========================================================
+   Logo Entrance Animation Settings
+   "نزول حقيقي من برة الفريم" — الحروف بتدخل من فوق حافة
+   الهيدر تماماً وبتقف في مكانها، من غير أي blur، وضوح
+   كامل من أول لحظة.
+========================================================= */
+
+const LOGO_ENTRANCE_FROM = {
+  y: -140,
+  opacity: 1,
+};
+
+const LOGO_ENTRANCE_TO = {
+  y: 0,
+  duration: 0.85,
+  ease: "power3.out",
+  stagger: 0.045,
+};
+
+// ثانية قبل ما يبدأ نزول اللوجو (سيبها 0 لو عايزه يبدأ فوراً)
+const LOGO_ENTRANCE_DELAY = 0;
+
+/* =========================================================
    Logo Component
 ========================================================= */
 
 const Logo = forwardRef<HTMLAnchorElement, LogoProps>(({ animate = true }, ref) => {
   const logoRef = useRef<HTMLAnchorElement | null>(null);
   const touchTlRef = useRef<gsap.core.Timeline | null>(null);
+  const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   const setRefs = (el: HTMLAnchorElement | null) => {
     logoRef.current = el;
@@ -46,6 +69,24 @@ const Logo = forwardRef<HTMLAnchorElement, LogoProps>(({ animate = true }, ref) 
       ref.current = el;
     }
   };
+
+  useEffect(() => {
+    if (!animate) return;
+
+    const chars = charRefs.current.filter(Boolean) as HTMLSpanElement[];
+    if (!chars.length) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(chars, LOGO_ENTRANCE_FROM);
+      gsap.to(chars, {
+        ...LOGO_ENTRANCE_TO,
+        delay: LOGO_ENTRANCE_DELAY,
+      });
+    });
+
+    return () => ctx.revert();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleMouseEnter = () => {
     const el = logoRef.current;
@@ -88,14 +129,17 @@ const Logo = forwardRef<HTMLAnchorElement, LogoProps>(({ animate = true }, ref) 
         letterSpacing: "0em",
         transformOrigin: "center",
         willChange: "transform, text-shadow, letter-spacing",
-        ...(animate ? { clipPath: "inset(0 100% 0 0)" } : undefined),
+        overflow: animate ? "hidden" : undefined,
       }}
     >
       {"JONES".split("").map((char, i) => (
         <span
           key={i}
+          ref={(el) => {
+            charRefs.current[i] = el;
+          }}
           className="inline-block"
-          style={animate ? { opacity: 0, transform: "translateY(40px)" } : undefined}
+          style={{ willChange: "transform" }}
         >
           {char}
         </span>

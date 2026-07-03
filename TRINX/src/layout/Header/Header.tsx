@@ -40,14 +40,14 @@ export default function Header() {
             {/* ── العمود 1: اللوجو (نسخة الديسكتوب) ── */}
             <div className="flex items-center justify-self-start">
               <div className="hidden md:block">
-                <Logo animate={false} />
+                <Logo animate />
               </div>
             </div>
 
             {/* ── العمود 2: اللوجو (نسخة الموبايل) + روابط النافيجيشن ── */}
             <div className="justify-self-center">
               <div className="md:hidden">
-                <Logo animate={false} />
+                <Logo animate />
               </div>
 
               <NavLinks />
