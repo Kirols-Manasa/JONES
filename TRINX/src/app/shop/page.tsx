@@ -87,7 +87,8 @@ const ShopIcon = () => {
   useEffect(() => {
     fetch("/icons/lottieflow-ecommerce-14-2-000000-easey.json")
       .then((res) => res.json())
-      .then((data) => setAnimationData(data));
+      .then((data) => setAnimationData(data))
+      .catch((err) => console.error("Failed to load lottie animation:", err));
   }, []);
 
   const handleClick = () => {
@@ -208,7 +209,13 @@ function BackButton() {
 // PRODUCT CARD — MOBILE
 // ============================================================
 
-function ProductCardMobile({ product }: { product: typeof PRODUCTS[0] }) {
+function ProductCardMobile({
+  product,
+  priority,
+}: {
+  product: typeof PRODUCTS[0];
+  priority?: boolean;
+}) {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-6 py-10 md:hidden">
 
@@ -222,6 +229,9 @@ function ProductCardMobile({ product }: { product: typeof PRODUCTS[0] }) {
           alt={product.flavor}
           width={400}
           height={600}
+          quality={80}
+          sizes="(max-width: 768px) 90vw, 400px"
+          priority={priority}
           className="object-contain w-auto h-full"
           style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))" }}
         />
@@ -266,7 +276,13 @@ function ProductCardMobile({ product }: { product: typeof PRODUCTS[0] }) {
 // PRODUCT CARD — DESKTOP
 // ============================================================
 
-function ProductCardDesktop({ product }: { product: typeof PRODUCTS[0] }) {
+function ProductCardDesktop({
+  product,
+  priority,
+}: {
+  product: typeof PRODUCTS[0];
+  priority?: boolean;
+}) {
   return (
     <div className="hidden md:grid h-full items-center" style={{ gridTemplateColumns: "1fr 1fr" }}>
 
@@ -319,6 +335,9 @@ function ProductCardDesktop({ product }: { product: typeof PRODUCTS[0] }) {
           alt={product.flavor}
           width={400}
           height={600}
+          quality={80}
+          sizes="(max-width: 768px) 90vw, 400px"
+          priority={priority}
           className="object-contain w-auto"
           style={{ height: "clamp(200px, 60vh, 75vh)", filter: "drop-shadow(0 32px 56px rgba(0,0,0,0.15))" }}
         />
@@ -389,8 +408,8 @@ export default function ShopPage() {
             style={{ height: "100svh", scrollMarginTop: "0px" }}
           >
             <Container className="h-full">
-              <ProductCardMobile product={product} />
-              <ProductCardDesktop product={product} />
+              <ProductCardMobile product={product} priority={i === 0} />
+              <ProductCardDesktop product={product} priority={i === 0} />
             </Container>
           </div>
         ))}
