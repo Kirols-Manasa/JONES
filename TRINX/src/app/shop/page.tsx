@@ -229,7 +229,7 @@ function ProductCardMobile({
           height={600}
           quality={80}
           sizes="(max-width: 768px) 90vw, 400px"
-          priority
+          loading="lazy"
           className="object-contain w-auto h-full"
           style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))" }}
         />
@@ -333,7 +333,7 @@ function ProductCardDesktop({
           height={600}
           quality={80}
           sizes="(max-width: 768px) 90vw, 400px"
-          priority
+          loading="lazy"
           className="object-contain w-auto"
           style={{ height: "clamp(200px, 60vh, 75vh)", filter: "drop-shadow(0 32px 56px rgba(0,0,0,0.15))" }}
         />

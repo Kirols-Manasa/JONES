@@ -16,7 +16,8 @@ export default function Culture() {
               alt="Jones Soda Community"
               width={700}
               height={800}
-               className="w-full h-[400px] md:h-[550px] object-cover transition-all duration-700 grayscale hover:grayscale-0 [@media(hover:none)]:grayscale-0"
+              loading="lazy"
+              className="w-full h-[400px] md:h-[550px] object-cover transition-all duration-700 grayscale hover:grayscale-0 [@media(hover:none)]:grayscale-0"
             />
           </div>
 

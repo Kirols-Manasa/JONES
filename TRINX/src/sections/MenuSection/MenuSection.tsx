@@ -248,6 +248,7 @@ export default function MenuSection() {
                   alt={product.flavor}
                   width={300}
                   height={400}
+                  loading="lazy"
                   className={IMAGE_CLASSES}
                 />
 

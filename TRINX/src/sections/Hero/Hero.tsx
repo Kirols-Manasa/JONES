@@ -100,7 +100,7 @@ if (!paragraph || !cta) return
                 alt="Jones Soda Bottle"
                 width={700}
                 height={1050}
-                priority
+                loading="lazy"
                 className="object-contain w-auto h-full max-w-full max-h-full max-sm:h-[90%]"
               />
             </div>

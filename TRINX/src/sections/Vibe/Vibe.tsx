@@ -125,9 +125,9 @@ export default function Vibe() {
            src="/images/photo-2.webp"
           alt="Jones Soda Community"
           fill
+          loading="lazy"
           className="object-cover"
           style={{ objectPosition: "center top" }}
-          priority
         />
       </div>
 
