@@ -96,7 +96,7 @@ if (!paragraph || !cta) return
           <div className="flex items-center justify-center w-full h-[45vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]">
             <div className="flex items-center justify-center w-full h-full">
               <Image
-                src="/images/CREAM_12ozBOTTLE_RGB_1024x1024_6a616cd7-6659-49bb-835c-2bfff120b295-removebg-preview.png"
+                src="/images/cream-white.png"
                 alt="Jones Soda Bottle"
                 width={700}
                 height={1050}

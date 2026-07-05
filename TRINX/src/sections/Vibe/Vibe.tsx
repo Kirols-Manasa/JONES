@@ -122,7 +122,7 @@ export default function Vibe() {
         }}
       >
         <Image
-           src="/images/photo.webp"
+           src="/images/photo-2.webp"
           alt="Jones Soda Community"
           fill
           className="object-cover"

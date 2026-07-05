@@ -20,7 +20,7 @@ const PRODUCTS = [
     flavor: "BERRY LEMONADE",
     slug: "berry-lemonade",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image: "/images/BERRYblue.png",
+    image: "/images/berry-blue.png",
   },
   {
     name: "JONES",
@@ -55,7 +55,7 @@ const PRODUCTS = [
     flavor: "CREAM SODA",
     slug: "cream-soda",
     size: "12-PACK / 12OZ GLASS BOTTLES",
-    image: "/images/CREAMwhite.png",
+    image: "/images/cream-white.png",
   },
 ];
 

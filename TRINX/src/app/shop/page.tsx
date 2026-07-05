@@ -22,7 +22,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "Bright, tangy, and refreshingly bold. A summer classic brewed with real berry extracts and a squeeze of lemonade.",
     notes: ["Natural flavors", "No preservatives", "Cane sugar sweetened"],
-    image: "/images/BERRYblue.png",
+    image: "/images/berry-blue.png",
   },
   {
     name: "JONES",
@@ -72,7 +72,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "Pure, velvety cream soda with a delicate vanilla warmth. Simple, indulgent, and endlessly drinkable.",
     notes: ["Madagascar vanilla", "Smooth finish", "Cane sugar sweetened"],
-    image: "/images/CREAMwhite.png",
+    image: "/images/cream-white.png",
   },
 ];
 

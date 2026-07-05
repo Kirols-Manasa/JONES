@@ -12,7 +12,7 @@ export default function Culture() {
           {/* IMAGE */}
           <div className="relative overflow-hidden group">
             <Image
-              src="/images/jones-soda-GreenApple-UGC.webp"
+              src="/images/photo.webp"
               alt="Jones Soda Community"
               width={700}
               height={800}
