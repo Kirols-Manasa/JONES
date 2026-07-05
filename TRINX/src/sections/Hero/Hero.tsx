@@ -78,7 +78,7 @@ if (!paragraph || !cta) return
                 data-hero-paragraph
                 className="text-[5vw] md:text-[2vw] lg:text-[1.4vw] font-black text-gray-500 leading-tight max-w-[52ch]"
               >
-                Cane sugar. Pure water. Bold flavor — the original craft soda since 1996.
+                Cane sugar. Pure water. Bold flavor — the original craft soda since 1996.kirols
               </p>
             </div>
 
