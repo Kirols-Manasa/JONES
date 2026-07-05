@@ -211,10 +211,8 @@ function BackButton() {
 
 function ProductCardMobile({
   product,
-  priority,
 }: {
   product: typeof PRODUCTS[0];
-  priority?: boolean;
 }) {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-6 py-10 md:hidden">
@@ -231,7 +229,7 @@ function ProductCardMobile({
           height={600}
           quality={80}
           sizes="(max-width: 768px) 90vw, 400px"
-          priority={priority}
+          priority
           className="object-contain w-auto h-full"
           style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))" }}
         />
@@ -278,10 +276,8 @@ function ProductCardMobile({
 
 function ProductCardDesktop({
   product,
-  priority,
 }: {
   product: typeof PRODUCTS[0];
-  priority?: boolean;
 }) {
   return (
     <div className="hidden md:grid h-full items-center" style={{ gridTemplateColumns: "1fr 1fr" }}>
@@ -337,7 +333,7 @@ function ProductCardDesktop({
           height={600}
           quality={80}
           sizes="(max-width: 768px) 90vw, 400px"
-          priority={priority}
+          priority
           className="object-contain w-auto"
           style={{ height: "clamp(200px, 60vh, 75vh)", filter: "drop-shadow(0 32px 56px rgba(0,0,0,0.15))" }}
         />
@@ -408,8 +404,8 @@ export default function ShopPage() {
             style={{ height: "100svh", scrollMarginTop: "0px" }}
           >
             <Container className="h-full">
-              <ProductCardMobile product={product} priority={i === 0} />
-              <ProductCardDesktop product={product} priority={i === 0} />
+              <ProductCardMobile product={product} />
+              <ProductCardDesktop product={product} />
             </Container>
           </div>
         ))}
