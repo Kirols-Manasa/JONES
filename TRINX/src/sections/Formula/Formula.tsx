@@ -31,6 +31,7 @@ const INGREDIENTS = [
 export default function Formula() {
   const videoSectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
+  const videoScaleRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const listSectionRef = useRef<HTMLElement>(null);
@@ -42,6 +43,26 @@ export default function Formula() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const playVideo = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const start = () => {
+          void video.play().catch(() => {});
+        };
+
+        if (video.readyState >= 2) {
+          start();
+        } else {
+          video.addEventListener("canplay", start, { once: true });
+          video.load();
+        }
+      };
+
+      const pauseVideo = () => {
+        videoRef.current?.pause();
+      };
+
       // ── VIDEO TRANSITION ──
       gsap.fromTo(
         videoWrapRef.current,
@@ -59,7 +80,7 @@ export default function Formula() {
       );
 
       gsap.fromTo(
-        videoRef.current,
+        videoScaleRef.current,
         { scale: 1.15 },
         {
           scale: 1,
@@ -75,12 +96,12 @@ export default function Formula() {
 
       ScrollTrigger.create({
         trigger: videoSectionRef.current,
-        start: "top 60%",
+        start: "top 75%",
         end: "bottom 40%",
-        onEnter: () => videoRef.current?.play(),
-        onEnterBack: () => videoRef.current?.play(),
-        onLeave: () => videoRef.current?.pause(),
-        onLeaveBack: () => videoRef.current?.pause(),
+        onEnter: playVideo,
+        onEnterBack: playVideo,
+        onLeave: pauseVideo,
+        onLeaveBack: pauseVideo,
       });
 
       // ── HEADER: split letter animation ──
@@ -195,15 +216,18 @@ const leave = () => {
             className="relative w-full h-full overflow-hidden"
             style={{ clipPath: "inset(35% 35% 35% 35% round 16px)" }}
           >
-            <video
-              ref={videoRef}
-              src="/videos/video.mp4"
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            <div ref={videoScaleRef} className="absolute inset-0 will-change-transform">
+              <video
+                ref={videoRef}
+                src="/videos/video.mp4"
+                muted
+                loop
+                playsInline
+                preload="none"
+                poster="/images/photo-2.webp"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
             <div className="absolute inset-0 bg-black/20" />
           </div>
         </div>

@@ -10,39 +10,47 @@ export default function Hero() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const lines = containerRef.current?.querySelectorAll("[data-reveal]");
-       const paragraph = containerRef.current?.querySelector<HTMLElement>("[data-hero-paragraph]");
-const cta = containerRef.current?.querySelector<HTMLElement>("[data-hero-cta]");
+    const runAnimation = () => {
+      const ctx = gsap.context(() => {
+        const lines = containerRef.current?.querySelectorAll("[data-reveal]");
+        const paragraph = containerRef.current?.querySelector<HTMLElement>("[data-hero-paragraph]");
+        const cta = containerRef.current?.querySelector<HTMLElement>("[data-hero-cta]");
 
-      // ✅ مش محتاج paused: true ولا أي علاقة بالانترو
-      // الـ globalTimeline هو اللي بيتحكم — لو الانترو لسه شغال، الـ tl دي هتتعمل
-      // بس مش هتتحرك غير لما الانترو يعمل resume()
-      const tl = gsap.timeline();
+        const tl = gsap.timeline();
 
-      lines?.forEach((line, i) => {
-        tl.fromTo(
-          line,
-          { clipPath: "inset(0 100% 0 0)", x: -14, skewX: -4 },
-          {
-            clipPath: "inset(0 0% 0 0)",
-            x: 0,
-            skewX: 0,
-            duration: 0.95,
-            ease: "power4.inOut",
-          },
-          i * 0.16
-        );
-      });
-if (!paragraph || !cta) return
-      tl.from(
-        paragraph,
-        { opacity: 0, y: 12, duration: 0.55, ease: "power2.out" },
-        "-=0.35"
-      ).from(cta, { opacity: 0, y: 10, duration: 0.45, ease: "power2.out" }, "-=0.25");
-    }, containerRef);
+        lines?.forEach((line, i) => {
+          tl.fromTo(
+            line,
+            { clipPath: "inset(0 100% 0 0)", x: -14, skewX: -4 },
+            {
+              clipPath: "inset(0 0% 0 0)",
+              x: 0,
+              skewX: 0,
+              duration: 0.95,
+              ease: "power4.inOut",
+            },
+            i * 0.16
+          );
+        });
 
-    return () => ctx.revert();
+        if (!paragraph || !cta) return;
+        tl.from(
+          paragraph,
+          { opacity: 0, y: 12, duration: 0.55, ease: "power2.out" },
+          "-=0.35"
+        ).from(cta, { opacity: 0, y: 10, duration: 0.45, ease: "power2.out" }, "-=0.25");
+      }, containerRef);
+
+      return () => ctx.revert();
+    };
+
+    if (document.documentElement.dataset.introDone === "true") {
+      return runAnimation();
+    }
+
+    const onIntroDone = () => runAnimation();
+    window.addEventListener("introDone", onIntroDone, { once: true });
+    return () => window.removeEventListener("introDone", onIntroDone);
   }, []);
 
   return (
@@ -100,7 +108,9 @@ if (!paragraph || !cta) return
                 alt="Jones Soda Bottle"
                 width={700}
                 height={1050}
-                loading="lazy"
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 768px) 90vw, 50vw"
                 className="object-contain w-auto h-full max-w-full max-h-full max-sm:h-[90%]"
               />
             </div>

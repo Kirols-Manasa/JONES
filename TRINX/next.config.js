@@ -3,14 +3,25 @@
  * for Docker builds.
  */
 import "./src/env.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import("next").NextConfig} */
 const config = {
+  outputFileTracingRoot: path.join(__dirname),
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  experimental: {
+    optimizePackageImports: ["gsap", "framer-motion", "lottie-react"],
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
   },
 };
 
