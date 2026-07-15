@@ -31,7 +31,6 @@ const INGREDIENTS = [
 export default function Formula() {
   const videoSectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
-  const videoScaleRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const listSectionRef = useRef<HTMLElement>(null);
@@ -41,28 +40,10 @@ export default function Formula() {
   const barRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const titleRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
+  const titleText = "SIMPLE. REAL.";
+
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const playVideo = () => {
-        const video = videoRef.current;
-        if (!video) return;
-
-        const start = () => {
-          void video.play().catch(() => {});
-        };
-
-        if (video.readyState >= 2) {
-          start();
-        } else {
-          video.addEventListener("canplay", start, { once: true });
-          video.load();
-        }
-      };
-
-      const pauseVideo = () => {
-        videoRef.current?.pause();
-      };
-
       // ── VIDEO TRANSITION ──
       gsap.fromTo(
         videoWrapRef.current,
@@ -80,7 +61,7 @@ export default function Formula() {
       );
 
       gsap.fromTo(
-        videoScaleRef.current,
+        videoRef.current,
         { scale: 1.15 },
         {
           scale: 1,
@@ -96,16 +77,15 @@ export default function Formula() {
 
       ScrollTrigger.create({
         trigger: videoSectionRef.current,
-        start: "top 75%",
+        start: "top 60%",
         end: "bottom 40%",
-        onEnter: playVideo,
-        onEnterBack: playVideo,
-        onLeave: pauseVideo,
-        onLeaveBack: pauseVideo,
+        onEnter: () => videoRef.current?.play(),
+        onEnterBack: () => videoRef.current?.play(),
+        onLeave: () => videoRef.current?.pause(),
+        onLeaveBack: () => videoRef.current?.pause(),
       });
 
-      // ── HEADER: split letter animation ──
-      // Eyebrow fade + slide up
+      // ── HEADER: fade + slide up ──
       gsap.fromTo(
         headerEyebrowRef.current,
         { y: 16, opacity: 0 },
@@ -122,20 +102,10 @@ export default function Formula() {
         }
       );
 
-      // Title: animate each character separately
+      // تحريك الحروف المقسمة مسبقاً في JSX
       const titleEl = headerTitleRef.current;
       if (titleEl) {
-        const text = titleEl.textContent || "";
-        titleEl.innerHTML = text
-          .split("")
-          .map((char) =>
-            char === " "
-              ? `<span style="display:inline-block">&nbsp;</span>`
-              : `<span style="display:inline-block;overflow:hidden"><span style="display:inline-block">${char}</span></span>`
-          )
-          .join("");
-
-        const innerSpans = titleEl.querySelectorAll("span > span");
+        const innerSpans = titleEl.querySelectorAll(".char-inner");
         gsap.fromTo(
           innerSpans,
           { y: "100%" },
@@ -170,41 +140,25 @@ export default function Formula() {
           },
         }
       );
-
-      // ── HOVER (desktop) ──
-      rowRefs.current.forEach((row, i) => {
-        if (!row) return;
-        const bar = barRefs.current[i];
-        const title = titleRefs.current[i];
-
-         const enter = () => {
-  if (bar) gsap.to(bar, { opacity: 1, duration: 0.25, ease: "power2.out" });
-  if (title) gsap.to(title, { x: 6, duration: 0.3, ease: "power2.out" });
-};
-const leave = () => {
-  if (bar) gsap.to(bar, { opacity: 0, duration: 0.25, ease: "power2.out" });
-  if (title) gsap.to(title, { x: 0, duration: 0.3, ease: "power2.out" });
-};
-
-        row.addEventListener("mouseenter", enter);
-        row.addEventListener("mouseleave", leave);
-
-        // ── TOUCH (mobile) ──
-        let touchActive = false;
-        const touchStart = () => {
-          touchActive = !touchActive;
-          if (touchActive) {
-            enter();
-          } else {
-            leave();
-          }
-        };
-        row.addEventListener("touchstart", touchStart, { passive: true });
-      });
     }, [videoSectionRef, listSectionRef]);
 
     return () => ctx.revert();
   }, []);
+
+  // إدارة حركات التحويم (Hover) برمجياً عبر دوال React لضمان التنظيف التلقائي
+  const handleMouseEnter = (index: number) => {
+    const bar = barRefs.current[index];
+    const title = titleRefs.current[index];
+    if (bar) gsap.to(bar, { opacity: 1, duration: 0.25, ease: "power2.out" });
+    if (title) gsap.to(title, { x: 6, duration: 0.3, ease: "power2.out" });
+  };
+
+  const handleMouseLeave = (index: number) => {
+    const bar = barRefs.current[index];
+    const title = titleRefs.current[index];
+    if (bar) gsap.to(bar, { opacity: 0, duration: 0.25, ease: "power2.out" });
+    if (title) gsap.to(title, { x: 0, duration: 0.3, ease: "power2.out" });
+  };
 
   return (
     <>
@@ -216,18 +170,15 @@ const leave = () => {
             className="relative w-full h-full overflow-hidden"
             style={{ clipPath: "inset(35% 35% 35% 35% round 16px)" }}
           >
-            <div ref={videoScaleRef} className="absolute inset-0 will-change-transform">
-              <video
-                ref={videoRef}
-                src="/videos/video.mp4"
-                muted
-                loop
-                playsInline
-                preload="none"
-                poster="/images/photo-2.webp"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            </div>
+            <video
+              ref={videoRef}
+              src="/videos/video.mp4"
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/20" />
           </div>
         </div>
@@ -237,34 +188,64 @@ const leave = () => {
       <section ref={listSectionRef} className="w-full bg-white py-16 md:py-20">
         <Container>
           <div className="flex flex-col gap-2 mb-10 md:mb-14">
+            {/* تحسين التباين هنا لتصبح text-gray-600 بدلاً من text-gray-400 */}
             <span
               ref={headerEyebrowRef}
-              className="text-label-sm uppercase tracking-widest text-gray-400"
+              className="text-label-sm uppercase tracking-widest text-gray-600"
             >
               What&apos;s Inside
             </span>
-           <h2
-  ref={headerTitleRef}
-  className="text-display text-black leading-tight whitespace-nowrap"
->
-  SIMPLE. REAL.
-</h2>
+            {/* تقسيم الحروف هنا مباشرة في الـ JSX لمنع الـ CLS */}
+            <h2
+              ref={headerTitleRef}
+              className="text-display text-black leading-tight whitespace-nowrap"
+            >
+              {titleText.split("").map((char, index) =>
+                char === " " ? (
+                  <span key={index} style={{ display: "inline-block" }}>
+                    &nbsp;
+                  </span>
+                ) : (
+                  <span
+                    key={index}
+                    style={{ display: "inline-block", overflow: "hidden" }}
+                  >
+                    <span
+                      className="char-inner"
+                      style={{ display: "inline-block" }}
+                    >
+                      {char}
+                    </span>
+                  </span>
+                )
+              )}
+            </h2>
           </div>
 
           <div className="flex flex-col">
             {INGREDIENTS.map((item, i) => (
               <div
                 key={i}
-                ref={(el) => { rowRefs.current[i] = el; }}
+                ref={(el) => {
+                  rowRefs.current[i] = el;
+                }}
+                onMouseEnter={() => handleMouseEnter(i)}
+                onMouseLeave={() => handleMouseLeave(i)}
+                onTouchStart={() => handleMouseEnter(i)}
+                onTouchEnd={() => handleMouseLeave(i)}
                 className="group grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 py-7 md:py-9 border-t border-black/10 items-start cursor-pointer select-none"
               >
                 <div className="md:col-span-5 flex items-start gap-4">
                   <span
-                    ref={(el) => { barRefs.current[i] = el; }}
+                    ref={(el) => {
+                      barRefs.current[i] = el;
+                    }}
                     className="block w-[3px] h-7 mt-1 bg-black opacity-0 shrink-0"
                   />
                   <span
-                    ref={(el) => { titleRefs.current[i] = el; }}
+                    ref={(el) => {
+                      titleRefs.current[i] = el;
+                    }}
                     className="text-headline-md text-black leading-snug inline-block"
                   >
                     {item.title}
@@ -272,7 +253,8 @@ const leave = () => {
                 </div>
 
                 <div className="md:col-span-7">
-                  <p className="text-body-md text-gray-500 max-w-prose leading-relaxed">
+                  {/* تحسين التباين هنا لتصبح text-gray-600 بدلاً من text-gray-500 */}
+                  <p className="text-body-md text-gray-600 max-w-prose leading-relaxed">
                     {item.body}
                   </p>
                 </div>

@@ -1,17 +1,15 @@
 import "@/styles/globals.css";
 
-import dynamic from "next/dynamic";
 import Header from "@/layout/Header/Header";
 import Footer from "@/layout/Footer/";
 import LinesScroll from "@/LinesScroll";
+import GridOverlayFONT from "@/GridOverlayFONT";
+import Intro from "@/intro";
 import PageTransition from "@/PageTransitionRout";
+import HoverMouse from "@/hoverMous";
 
 import { type Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
-
-const Intro = dynamic(() => import("@/intro"), { ssr: false });
-const HoverMouse = dynamic(() => import("@/hoverMous"), { ssr: false });
-const GridOverlayFONT = dynamic(() => import("@/GridOverlayFONT"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -22,8 +20,6 @@ export const metadata: Metadata = {
 const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-  preload: true,
 });
 
 export default function RootLayout({
@@ -41,7 +37,7 @@ export default function RootLayout({
             <main>{children}</main>
           </PageTransition>
           <Footer />
-          {process.env.NODE_ENV === "development" && <GridOverlayFONT />}
+          <GridOverlayFONT />
         </LinesScroll>
         <HoverMouse />
       </body>

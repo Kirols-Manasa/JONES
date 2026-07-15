@@ -1,4 +1,4 @@
- 'use client'
+  'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -33,7 +33,7 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   >([])
   const scanY = useRef(0)
 
-  const DURATION = 1200
+  const DURATION = 2000
 
   const drawNoise = useCallback(() => {
     const canvas = canvasRef.current
@@ -70,7 +70,6 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   }, [])
 
   const finishSequence = useCallback(() => {
-    sessionStorage.setItem('introSeen', '1')
     setTimeout(() => {
       setPhase('flash')
       setTimeout(() => {
@@ -116,7 +115,7 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       setFillH(easedT * 100)
       if (pct >= 65) setTagVisible(true)
 
-      if (now - noiseTimerRef.current > 200) {
+      if (now - noiseTimerRef.current > 90) {
         drawNoise()
         noiseTimerRef.current = now
       }
@@ -129,9 +128,11 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       scanY.current = (scanY.current + 1.6) % (wrapRef.current?.offsetHeight ?? 520)
       if (scanRef.current) scanRef.current.style.top = scanY.current + 'px'
 
-      const dropScale = Math.min(easedT * 1.4, 1)
+      const dropBottom = easedT * 100
+      const dropHeight = Math.min(easedT * 70, 70)
       if (dropRef.current) {
-        dropRef.current.style.transform = `translateX(-50%) scaleY(${dropScale})`
+        dropRef.current.style.bottom = dropBottom + '%'
+        dropRef.current.style.height = dropHeight + '%'
       }
 
       bubbles.current = bubbles.current.filter((b) => {
@@ -199,11 +200,9 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
           bottom: 0,
           left: 0,
           width: '100%',
-          height: '100%',
+          height: fillH + '%',
           background: '#111',
-          transform: `scaleY(${fillH / 100})`,
-          transformOrigin: 'bottom center',
-          willChange: 'transform',
+          transition: 'none',
         }}
       />
       <div
@@ -222,13 +221,11 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
         style={{
           position: 'absolute',
           left: '50%',
-          transform: 'translateX(-50%) scaleY(0)',
-          transformOrigin: 'bottom center',
+          transform: 'translateX(-50%)',
           width: '1px',
           bottom: 0,
-          height: '70%',
+          height: 0,
           background: 'linear-gradient(to top, rgba(255,255,255,0.5), transparent)',
-          willChange: 'transform',
         }}
       />
       <div
@@ -298,16 +295,6 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
 
 export default function Intro() {
   const [show, setShow] = useState(true)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    if (sessionStorage.getItem('introSeen')) {
-      document.documentElement.dataset.introDone = 'true'
-      setShow(false)
-    }
-    setReady(true)
-  }, [])
-
-  if (!ready || !show) return null
+  if (!show) return null
   return <BeverageIntroInner onDone={() => setShow(false)} />
 }

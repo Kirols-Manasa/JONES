@@ -39,10 +39,11 @@ export default function Culture() {
       across the globe.
     </p>
 
-    <div>
+     <div>
       <a
-        href="/submit"
-        className="inline-flex items-center text-label-sm uppercase tracking-widest text-white border-b border-white pb-1 hover:text-white/60 hover:border-white/60 transition-colors"
+        href="#"
+        onClick={(e) => e.preventDefault()}
+        className="inline-flex items-center text-label-sm uppercase tracking-widest text-white border-b border-white pb-1 hover:text-white/60 hover:border-white/60 transition-colors cursor-pointer"
       >
         Submit Your Photo
       </a>
