@@ -14,12 +14,12 @@ if (typeof window !== "undefined") {
 const SHOP_HREF = "/shop";
 
 const PRODUCTS = [
-  { name: "JONES", flavor: "BERRY LEMONADE", slug: "berry-lemonade", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/berry-blue.png" },
-  { name: "JONES", flavor: "ROOT BEER", slug: "root-beer", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/chocolate.png" },
-  { name: "JONES", flavor: "GREEN APPLE", slug: "green-apple", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/green.png" },
-  { name: "JONES", flavor: "STRAWBERRY LIME", slug: "strawberry-lime", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/red.png" },
-  { name: "JONES", flavor: "ORANGE & CREAM", slug: "orange-cream", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/orange.png" },
-  { name: "JONES", flavor: "CREAM SODA", slug: "cream-soda", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/cream-white.png" },
+  { name: "JONES", flavor: "BERRY LEMONADE", slug: "berry-lemonade", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/berry-blue.webp" },
+  { name: "JONES", flavor: "ROOT BEER", slug: "root-beer", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/chocolate.webp" },
+  { name: "JONES", flavor: "GREEN APPLE", slug: "green-apple", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/green.webp" },
+  { name: "JONES", flavor: "STRAWBERRY LIME", slug: "strawberry-lime", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/red.webp" },
+  { name: "JONES", flavor: "ORANGE & CREAM", slug: "orange-cream", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/orange.webp" },
+  { name: "JONES", flavor: "CREAM SODA", slug: "cream-soda", size: "12-PACK / 12OZ GLASS BOTTLES", image: "/images/cream-white.webp" },
 ];
 
 const CARD_CLASSES = [
