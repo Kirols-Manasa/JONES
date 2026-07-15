@@ -27,7 +27,6 @@ export default function Nutrition() {
         const suffix = stats[i]!.suffix;
         const obj = { val: 0 };
 
-        // Skew In
         gsap.fromTo(el,
           { opacity: 0, skewX: -20, x: -20 },
           {
@@ -39,7 +38,6 @@ export default function Nutrition() {
           }
         );
 
-        // Count Up
         gsap.to(obj, {
           val: target,
           duration: 1.6,
@@ -68,37 +66,33 @@ export default function Nutrition() {
   }, []);
 
   return (
-    <>
-       
-
-      <section ref={sectionRef} className="w-full bg-white py-12 sm:py-16">
-        <Container>
-          <div className="grid grid-cols-4 divide-x divide-black/10 text-center w-full overflow-hidden">
-            {stats.map(({ display, suffix, label }) => (
-              <div
-                key={label}
-                className="flex flex-col items-center justify-center gap-2 min-h-[110px] px-2"
+    <section ref={sectionRef} className="w-full bg-white py-12 sm:py-16">
+      <Container>
+        <div className="grid grid-cols-4 divide-x divide-black/10 text-center w-full overflow-hidden">
+          {stats.map(({ display, suffix, label }) => (
+            <div
+              key={label}
+              className="flex flex-col items-center justify-center gap-2 min-h-[110px] px-2"
+            >
+              <span
+                data-stat-value
+                data-suffix={suffix}
+                style={{ opacity: 0, transform: "skewX(-20deg) translateX(-20px)" }}
+                className="text-[32px] md:text-headline-lg text-black leading-none tracking-tight"
               >
-                <span
-                  data-stat-value
-                  data-suffix={suffix}
-                  className="text-[32px] md:text-headline-lg text-black leading-none tracking-tight"
-                >
-                  {display}
-                </span>
-                <span
-                  data-stat-label
-                  className="text-label-sm uppercase tracking-widest text-gray-400 leading-tight"
-                >
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-       
-    </>
+                {display}
+              </span>
+              <span
+                data-stat-label
+                style={{ opacity: 0 }}
+                className="text-label-sm uppercase tracking-widest text-gray-400 leading-tight"
+              >
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
   );
 }

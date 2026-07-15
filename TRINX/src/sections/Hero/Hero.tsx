@@ -1,4 +1,4 @@
-  "use client";
+ "use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -12,12 +12,11 @@ export default function Hero() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const lines = containerRef.current?.querySelectorAll("[data-reveal]");
-       const paragraph = containerRef.current?.querySelector<HTMLElement>("[data-hero-paragraph]");
-const cta = containerRef.current?.querySelector<HTMLElement>("[data-hero-cta]");
+      const paragraph = containerRef.current?.querySelector<HTMLElement>("[data-hero-paragraph]");
+      const cta = containerRef.current?.querySelector<HTMLElement>("[data-hero-cta]");
 
-      // ✅ مش محتاج paused: true ولا أي علاقة بالانترو
-      // الـ globalTimeline هو اللي بيتحكم — لو الانترو لسه شغال، الـ tl دي هتتعمل
-      // بس مش هتتحرك غير لما الانترو يعمل resume()
+      if (!paragraph || !cta) return;
+
       const tl = gsap.timeline();
 
       lines?.forEach((line, i) => {
@@ -34,12 +33,18 @@ const cta = containerRef.current?.querySelector<HTMLElement>("[data-hero-cta]");
           i * 0.16
         );
       });
-if (!paragraph || !cta) return
-      tl.from(
+
+      tl.fromTo(
         paragraph,
-        { opacity: 0, y: 12, duration: 0.55, ease: "power2.out" },
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" },
         "-=0.35"
-      ).from(cta, { opacity: 0, y: 10, duration: 0.45, ease: "power2.out" }, "-=0.25");
+      ).fromTo(
+        cta,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
+        "-=0.25"
+      );
     }, containerRef);
 
     return () => ctx.revert();
@@ -59,6 +64,7 @@ if (!paragraph || !cta) return
                 <span className="block overflow-hidden">
                   <span
                     data-reveal
+                    style={{ clipPath: "inset(0 100% 0 0)" }}
                     className="block [mask-image:linear-gradient(to_right,#000_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,#000_85%,transparent_100%)]"
                   >
                     MADE FOR
@@ -67,6 +73,7 @@ if (!paragraph || !cta) return
                 <span className="block overflow-hidden">
                   <span
                     data-reveal
+                    style={{ clipPath: "inset(0 100% 0 0)" }}
                     className="block font-black text-gray-400 [mask-image:linear-gradient(to_right,#000_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,#000_85%,transparent_100%)]"
                   >
                     REAL.
@@ -76,13 +83,14 @@ if (!paragraph || !cta) return
 
               <p
                 data-hero-paragraph
+                style={{ opacity: 0 }}
                 className="text-[5vw] md:text-[2vw] lg:text-[1.4vw] font-black text-gray-500 leading-tight max-w-[52ch]"
               >
-                Cane sugar. Pure water. Bold flavor — the original craft soda since 1996.kirols
+                Cane sugar. Pure water. Bold flavor — the original craft soda since 1996.
               </p>
             </div>
 
-            <div data-hero-cta className="mt-2">
+            <div data-hero-cta style={{ opacity: 0 }} className="mt-2">
               <Link
                 href="/shop"
                 className="inline-block border-[4px] border-black bg-black text-white px-8 py-3.5 uppercase tracking-widest hover:bg-white hover:text-black transition"
@@ -100,7 +108,7 @@ if (!paragraph || !cta) return
                 alt="Jones Soda Bottle"
                 width={700}
                 height={1050}
-                loading="lazy"
+                priority
                 className="object-contain w-auto h-full max-w-full max-h-full max-sm:h-[90%]"
               />
             </div>

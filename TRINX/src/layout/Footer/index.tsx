@@ -4,6 +4,7 @@ import Container from "@/Container";
 const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export default function Footer() {
@@ -23,13 +24,12 @@ export default function Footer() {
           </span>
           <nav className="flex gap-7">
             {["Shop", "About", "Contact", "Privacy"].map((link) => (
-              <a
+              <span
                 key={link}
-                href={`/${link.toLowerCase()}`}
-                className="text-xs text-[#aaaaaa] tracking-[0.08em] hover:text-[#1a1a1a] transition-colors duration-200"
+                className="text-xs text-[#aaaaaa] tracking-[0.08em] hover:text-[#1a1a1a] transition-colors duration-200 cursor-pointer"
               >
                 {link}
-              </a>
+              </span>
             ))}
           </nav>
         </div>

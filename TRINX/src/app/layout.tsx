@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+ import "@/styles/globals.css";
 
 import Header from "@/layout/Header/Header";
 import Footer from "@/layout/Footer/";
@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export default function RootLayout({
@@ -37,7 +38,7 @@ export default function RootLayout({
             <main>{children}</main>
           </PageTransition>
           <Footer />
-          <GridOverlayFONT />
+          {process.env.NODE_ENV === "development" && <GridOverlayFONT />}
         </LinesScroll>
         <HoverMouse />
       </body>

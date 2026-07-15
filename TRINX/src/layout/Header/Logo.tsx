@@ -139,7 +139,10 @@ const Logo = forwardRef<HTMLAnchorElement, LogoProps>(({ animate = true }, ref) 
             charRefs.current[i] = el;
           }}
           className="inline-block"
-          style={{ willChange: "transform" }}
+          style={{
+            willChange: "transform",
+            transform: animate ? "translateY(-140px)" : undefined,
+          }}
         >
           {char}
         </span>

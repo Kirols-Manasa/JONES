@@ -353,7 +353,11 @@ function DesktopNavLink({
       transition={DESKTOP_LINK_TRANSITION}
       className={DESKTOP_LINK_CLASSES}
     >
-      <span ref={textRef} className={DESKTOP_LINK_TEXT_CLASSES}>
+      <span
+        ref={textRef}
+        style={{ transform: "translateY(-60px)", opacity: 0 }}
+        className={DESKTOP_LINK_TEXT_CLASSES}
+      >
         {link.name}
       </span>
 

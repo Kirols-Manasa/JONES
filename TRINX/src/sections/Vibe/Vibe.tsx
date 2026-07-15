@@ -1,4 +1,4 @@
-  "use client";
+ "use client";
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
@@ -21,7 +21,6 @@ export default function Vibe() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // ── 1. PARALLAX ──
       gsap.fromTo(
         imgWrapRef.current,
         { y: 0 },
@@ -37,7 +36,6 @@ export default function Vibe() {
         }
       );
 
-      // ── 2. KEN BURNS ──
       gsap.fromTo(
         imgWrapRef.current,
         { scale: 1.06 },
@@ -50,7 +48,6 @@ export default function Vibe() {
         }
       );
 
-      // ── 3. OVERLAY ──
       gsap.fromTo(
         overlayRef.current,
         { opacity: 0.15 },
@@ -66,7 +63,6 @@ export default function Vibe() {
         }
       );
 
-      // ── 4. ظهور المحتوى — Elastic Overshoot ──
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -117,15 +113,15 @@ export default function Vibe() {
           left: 0,
           right: 0,
           bottom: "-150px",
-          transform: "scale(1.06)",
           transformOrigin: "center top",
         }}
       >
         <Image
-           src="/images/photo-2.webp"
+          src="/images/photo-2.webp"
           alt="Jones Soda Community"
           fill
           loading="lazy"
+          sizes="100vw"
           className="object-cover"
           style={{ objectPosition: "center top" }}
         />
@@ -138,30 +134,37 @@ export default function Vibe() {
           <div className="flex flex-col gap-6 max-w-xl">
             <span
               ref={eyebrowRef}
+              style={{ opacity: 0, transform: "translateY(20px)" }}
               className="text-label-sm uppercase tracking-widest text-white/75"
             >
               Culture & Community
             </span>
 
-            <h2 ref={headlineRef} className="text-display text-white">
+            <h2
+              ref={headlineRef}
+              style={{ opacity: 0, transform: "translateY(60px)" }}
+              className="text-display text-white"
+            >
               SODA FOR THE
               <br />
               REAL ONES.
             </h2>
 
-            <p ref={bodyRef} className="text-body-lg text-white/70 max-w-[500px]">
+            <p
+              ref={bodyRef}
+              style={{ opacity: 0, transform: "translateY(25px)" }}
+              className="text-body-lg text-white/70 max-w-[500px]"
+            >
               Jones isn&apos;t just what you drink — it&apos;s who you are. From skate
               parks to beach days, our bottles belong wherever life gets
               interesting. We celebrate the unique, the weird, and the authentic.
             </p>
 
-            <div ref={ctaRef}>
-  <button
-    className="inline-block border-[3px] border-white text-white text-label-sm uppercase tracking-widest px-8 py-4 rounded-[2.5px] hover:bg-white hover:text-black transition-colors duration-300"
-  >
-    Join the Community
-  </button>
-</div>
+            <div ref={ctaRef} style={{ opacity: 0, transform: "translateY(20px)" }}>
+              <button className="inline-block border-[3px] border-white text-white text-label-sm uppercase tracking-widest px-8 py-4 rounded-[2.5px] hover:bg-white hover:text-black transition-colors duration-300">
+                Join the Community
+              </button>
+            </div>
           </div>
         </Container>
       </div>

@@ -1,7 +1,10 @@
-"use client";
+ "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import Lottie, { type LottieRefCurrentProps } from "lottie-react";
+import type { LottieRefCurrentProps } from "lottie-react";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 /* ╔══════════════════════════════════════════════════════════════════════╗
    ║  🛍️ أيقونة الشوب (ShopIcon Component)                                ║

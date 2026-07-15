@@ -13,14 +13,18 @@ function easeInOutExpo(t: number): number {
 }
 
 // ⚡ دقة داخلية أقل للـ noise canvas (هيتكبّر بالـ CSS للحجم الفعلي)
-// بما إن الـ opacity بتاعه 0.18 والمحتوى عشوائي أصلاً، مفيش فرق بصري ملحوظ
-// لكن عدد البكسلات اللي بتتحسب بيقل بعشرات المرات = أداء أفضل بكتير
 const NOISE_SCALE = 6
 
+type Bubble = {
+  el: HTMLDivElement
+  y: number
+  vy: number
+  life: number
+  decay: number
+}
+
 function BeverageIntroInner({ onDone }: { onDone: () => void }) {
-  const [count, setCount] = useState(0)
   const [phase, setPhase] = useState<'counting' | 'flash' | 'reveal'>('counting')
-  const [fillH, setFillH] = useState(0)
   const [tagVisible, setTagVisible] = useState(false)
 
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -28,20 +32,17 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   const scanRef = useRef<HTMLDivElement>(null)
   const dropRef = useRef<HTMLDivElement>(null)
   const bubbleContainerRef = useRef<HTMLDivElement>(null)
+  const countRef = useRef<HTMLDivElement>(null)
+  const fillRef = useRef<HTMLDivElement>(null)
 
   const startRef = useRef<number | null>(null)
   const rafRef = useRef<number>(0)
   const noiseTimerRef = useRef(0)
   const bubbleTimerRef = useRef(0)
-  const bubbles = useRef<
-    Array<{ el: HTMLDivElement; y: number; vy: number; life: number; decay: number }>
-  >([])
+  const bubbles = useRef<Bubble[]>([])
   const scanY = useRef(0)
-
-  // ⚡ نخزّن مقاس الـ canvas مرة واحدة (وعند الـ resize بس)
-  // بدل ما نقرا offsetWidth/offsetHeight كل مرة جوه drawNoise (ده كان بيعمل
-  // forced synchronous layout كل ~90ms طول مدة الانترو)
   const canvasSizeRef = useRef({ w: 0, h: 0 })
+  const tagVisibleRef = useRef(false)
 
   const DURATION = 2000
 
@@ -50,7 +51,6 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    // ⚡ بنرسم بدقة داخلية مقسومة على NOISE_SCALE بدل دقة الشاشة الكاملة
     const w = canvas.width
     const h = canvas.height
     if (w === 0 || h === 0) return
@@ -66,8 +66,6 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
     ctx.putImageData(img, 0, 0)
   }, [])
 
-  // ⚡ دالة منفصلة لضبط مقاس الـ canvas (تتنفذ عند mount وعند resize بس،
-  // مش جوه الـ animation loop)
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current
     const wrap = wrapRef.current
@@ -101,17 +99,10 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       setTimeout(() => {
         setPhase('reveal')
 
-        // ✅ نفك القفل عن كل الـ GSAP في الموقع كله
         gsap.globalTimeline.resume()
-
-        // ✅ نعمل refresh للـ ScrollTrigger عشان يحسب المواقع صح
         ScrollTrigger.refresh()
-
-        // ✅ نفك السكرول
         document.body.style.overflow = ''
 
-        // ✅ نعلّم إن الانترو خلص (احتياطي لأي حاجة مش GSAP)
-        // ⚠️ لسه سايبها زي ما هي - محتاجة تأكيد إن حد بيستخدمها فعلاً
         window.dispatchEvent(new Event('introDone'))
         document.documentElement.dataset.introDone = 'true'
 
@@ -123,17 +114,12 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   }, [onDone])
 
   useEffect(() => {
-    // ✅ نوقف كل حركة GSAP في الموقع كله فور ما الانترو يبدأ
     gsap.globalTimeline.pause()
-
-    // ✅ نمنع السكرول أثناء الانترو
     document.body.style.overflow = 'hidden'
 
-    // ⚡ نظبط مقاس الـ canvas مرة واحدة بس عند البداية
     resizeCanvas()
     drawNoise()
 
-    // ⚡ نعيد ضبط المقاس بس لو حصل resize فعلي (مش جوه الـ loop)
     const handleResize = () => {
       resizeCanvas()
     }
@@ -146,9 +132,16 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       const easedT = easeInOutExpo(rawT)
       const pct = Math.round(easedT * 100)
 
-      setCount(pct)
-      setFillH(easedT * 100)
-      if (pct >= 65) setTagVisible(true)
+      // ⚡ تحديث مباشر على الـ DOM بدل setState — بيلغي عشرات
+      // الـ re-renders خلال الـ 2 ثانية دول، وده أكبر مصدر لتقليل
+      // الـ Total Blocking Time جوه الانترو
+      if (countRef.current) countRef.current.textContent = String(pct)
+      if (fillRef.current) fillRef.current.style.height = easedT * 100 + '%'
+
+      if (pct >= 65 && !tagVisibleRef.current) {
+        tagVisibleRef.current = true
+        setTagVisible(true)
+      }
 
       if (now - noiseTimerRef.current > 90) {
         drawNoise()
@@ -185,8 +178,8 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       if (rawT < 1) {
         rafRef.current = requestAnimationFrame(loop)
       } else {
-        setCount(100)
-        setFillH(100)
+        if (countRef.current) countRef.current.textContent = '100'
+        if (fillRef.current) fillRef.current.style.height = '100%'
         finishSequence()
       }
     }
@@ -196,7 +189,6 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
     return () => {
       cancelAnimationFrame(rafRef.current)
       window.removeEventListener('resize', handleResize)
-      // cleanup لو الـ component اتفك قبل ما يخلص
       document.body.style.overflow = ''
     }
   }, [drawNoise, spawnBubble, finishSequence, resizeCanvas])
@@ -228,17 +220,16 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
           height: '100%',
           opacity: 0.18,
           pointerEvents: 'none',
-          // ⚡ imageRendering: 'pixelated' مش هنستخدمها عشان النويز يفضل ناعم
-          // بصريًا زي ما كان بالظبط رغم تقليل الدقة الداخلية
         }}
       />
       <div
+        ref={fillRef}
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           width: '100%',
-          height: fillH + '%',
+          height: '0%',
           background: '#111',
           transition: 'none',
         }}
@@ -289,6 +280,7 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
         }}
       >
         <div
+          ref={countRef}
           style={{
             fontSize: 'clamp(80px, 18vw, 140px)',
             fontWeight: 700,
@@ -298,7 +290,7 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
             fontVariantNumeric: 'tabular-nums',
           }}
         >
-          {count}
+          0
         </div>
         <div
           style={{
