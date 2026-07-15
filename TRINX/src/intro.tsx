@@ -1,4 +1,4 @@
-  'use client'
+ 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -11,6 +11,11 @@ function easeInOutExpo(t: number): number {
   if (t < 0.5) return Math.pow(2, 20 * t - 10) / 2
   return (2 - Math.pow(2, -20 * t + 10)) / 2
 }
+
+// ⚡ دقة داخلية أقل للـ noise canvas (هيتكبّر بالـ CSS للحجم الفعلي)
+// بما إن الـ opacity بتاعه 0.18 والمحتوى عشوائي أصلاً، مفيش فرق بصري ملحوظ
+// لكن عدد البكسلات اللي بتتحسب بيقل بعشرات المرات = أداء أفضل بكتير
+const NOISE_SCALE = 6
 
 function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   const [count, setCount] = useState(0)
@@ -33,15 +38,23 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   >([])
   const scanY = useRef(0)
 
+  // ⚡ نخزّن مقاس الـ canvas مرة واحدة (وعند الـ resize بس)
+  // بدل ما نقرا offsetWidth/offsetHeight كل مرة جوه drawNoise (ده كان بيعمل
+  // forced synchronous layout كل ~90ms طول مدة الانترو)
+  const canvasSizeRef = useRef({ w: 0, h: 0 })
+
   const DURATION = 2000
 
   const drawNoise = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')!
-    canvas.width = canvas.offsetWidth
-    canvas.height = canvas.offsetHeight
-    const img = ctx.createImageData(canvas.width, canvas.height)
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    // ⚡ بنرسم بدقة داخلية مقسومة على NOISE_SCALE بدل دقة الشاشة الكاملة
+    const w = canvas.width
+    const h = canvas.height
+    if (w === 0 || h === 0) return
+    const img = ctx.createImageData(w, h)
     const d = img.data
     for (let i = 0; i < d.length; i += 4) {
       const v = Math.random() * 255
@@ -51,6 +64,19 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       d[i + 3] = 13
     }
     ctx.putImageData(img, 0, 0)
+  }, [])
+
+  // ⚡ دالة منفصلة لضبط مقاس الـ canvas (تتنفذ عند mount وعند resize بس،
+  // مش جوه الـ animation loop)
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current
+    const wrap = wrapRef.current
+    if (!canvas || !wrap) return
+    const w = Math.max(1, Math.round(wrap.offsetWidth / NOISE_SCALE))
+    const h = Math.max(1, Math.round(wrap.offsetHeight / NOISE_SCALE))
+    canvasSizeRef.current = { w, h }
+    canvas.width = w
+    canvas.height = h
   }, [])
 
   const spawnBubble = useCallback(() => {
@@ -85,6 +111,7 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
         document.body.style.overflow = ''
 
         // ✅ نعلّم إن الانترو خلص (احتياطي لأي حاجة مش GSAP)
+        // ⚠️ لسه سايبها زي ما هي - محتاجة تأكيد إن حد بيستخدمها فعلاً
         window.dispatchEvent(new Event('introDone'))
         document.documentElement.dataset.introDone = 'true'
 
@@ -102,7 +129,15 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
     // ✅ نمنع السكرول أثناء الانترو
     document.body.style.overflow = 'hidden'
 
+    // ⚡ نظبط مقاس الـ canvas مرة واحدة بس عند البداية
+    resizeCanvas()
     drawNoise()
+
+    // ⚡ نعيد ضبط المقاس بس لو حصل resize فعلي (مش جوه الـ loop)
+    const handleResize = () => {
+      resizeCanvas()
+    }
+    window.addEventListener('resize', handleResize)
 
     const loop = (now: number) => {
       if (!startRef.current) startRef.current = now
@@ -160,10 +195,11 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
 
     return () => {
       cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('resize', handleResize)
       // cleanup لو الـ component اتفك قبل ما يخلص
       document.body.style.overflow = ''
     }
-  }, [drawNoise, spawnBubble, finishSequence])
+  }, [drawNoise, spawnBubble, finishSequence, resizeCanvas])
 
   return (
     <div
@@ -192,6 +228,8 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
           height: '100%',
           opacity: 0.18,
           pointerEvents: 'none',
+          // ⚡ imageRendering: 'pixelated' مش هنستخدمها عشان النويز يفضل ناعم
+          // بصريًا زي ما كان بالظبط رغم تقليل الدقة الداخلية
         }}
       />
       <div

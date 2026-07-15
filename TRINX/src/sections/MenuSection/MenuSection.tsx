@@ -1,6 +1,6 @@
  "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
@@ -160,15 +160,25 @@ function splitToChars(text: string) {
     </span>
   ));
 }
+
 export default function MenuSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const headerWrapRef = useRef<HTMLDivElement>(null);
 
+  // تعديل: تجميد نتيجة splitToChars بـ useMemo عشان منعيدش بناء
+  // عشرات الـ <span> دي في كل re-render — النص نفسه ثابت وميتغيرش
+  const titleChars = useMemo(() => splitToChars("THE ESSENTIALS"), []);
+  const subtitleChars = useMemo(
+    () => splitToChars("Available for nationwide delivery"),
+    []
+  );
+
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const titleChars = titleRef.current?.querySelectorAll(".split-char");
-      const subtitleChars = subtitleRef.current?.querySelectorAll(".split-char");
+      const titleCharEls = titleRef.current?.querySelectorAll(".split-char");
+      const subtitleCharEls =
+        subtitleRef.current?.querySelectorAll(".split-char");
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -178,34 +188,39 @@ export default function MenuSection() {
         },
       });
 
-      if (titleChars) {
+      // ⚡ تعديل الأداء: شلنا "filter: blur()" من هنا.
+      // الـ blur كان بيتشغل على كل حرف لوحده (~45 عنصر) في نفس الوقت تقريبًا،
+      // وده بيجبر المتصفح يعيد رسم (repaint) كل طبقة blur في كل فريم —
+      // ده اللي كان مسبب الإحساس بالتقل/التقطيع.
+      // دلوقتي الحركة بقت بس "transform" (y) + "opacity"، وهما الخاصيتين
+      // الوحيدين اللي المتصفح بيقدر يحركهم على الـ GPU compositor مباشرة
+      // من غير أي repaint — يعني سلاسة حقيقية حتى لو الأجهزة أضعف.
+      if (titleCharEls) {
         tl.fromTo(
-          titleChars,
-          { y: "110%", filter: "blur(14px)", opacity: 0 },
+          titleCharEls,
+          { y: "110%", opacity: 0 },
           {
             y: "0%",
-            filter: "blur(0px)",
             opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.025,
+            duration: 0.6,
+            ease: "power2.out",
+            stagger: 0.02,
           }
         );
       }
 
-      if (subtitleChars) {
+      if (subtitleCharEls) {
         tl.fromTo(
-          subtitleChars,
-          { y: "110%", filter: "blur(10px)", opacity: 0 },
+          subtitleCharEls,
+          { y: "110%", opacity: 0 },
           {
             y: "0%",
-            filter: "blur(0px)",
             opacity: 1,
-            duration: 0.7,
-            ease: "power3.out",
-            stagger: 0.012,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.01,
           },
-          "-=0.5"
+          "-=0.35"
         );
       }
     }, headerWrapRef);
@@ -219,9 +234,14 @@ export default function MenuSection() {
         {/* ── HEADER ── */}
         <div ref={headerWrapRef} className="flex items-end justify-between mb-10">
           <div className="flex flex-col gap-1">
-            <h2 ref={titleRef} className="text-headline-lg text-black">{splitToChars("THE ESSENTIALS")}</h2>
-            <p ref={subtitleRef} className="text-label-sm uppercase tracking-widest text-gray-400">
-              {splitToChars("Available for nationwide delivery")}
+            <h2 ref={titleRef} className="text-headline-lg text-black">
+              {titleChars}
+            </h2>
+            <p
+              ref={subtitleRef}
+              className="text-label-sm uppercase tracking-widest text-gray-400"
+            >
+              {subtitleChars}
             </p>
           </div>
           <a
@@ -236,7 +256,9 @@ export default function MenuSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {PRODUCTS.map((product) => (
             <Link
-              key={product.flavor}
+              // تعديل: استخدام slug بدل flavor كـ key — نفس القيمة الفريدة
+              // بس ده الحقل المخصص أصلاً كمعرّف ثابت لكل منتج
+              key={product.slug}
               href={`${SHOP_HREF}#${product.slug}`}
               scroll={false}
               className={CARD_CLASSES}
@@ -249,6 +271,9 @@ export default function MenuSection() {
                   width={300}
                   height={400}
                   loading="lazy"
+                  // تعديل: إضافة sizes عشان next/image يختار أنسب حجم صورة
+                  // حسب الـ breakpoint الفعلي بدل ما يعتمد بس على width الثابت
+                  sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className={IMAGE_CLASSES}
                 />
 
@@ -262,7 +287,9 @@ export default function MenuSection() {
                 <span className="text-label-sm uppercase tracking-widest text-gray-400">
                   {product.name}
                 </span>
-                <span className="text-headline-md text-black">{product.flavor}</span>
+                <span className="text-headline-md text-black">
+                  {product.flavor}
+                </span>
                 <span className="text-label-sm uppercase tracking-widest text-gray-400">
                   {product.size}
                 </span>
