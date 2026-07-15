@@ -20,6 +20,7 @@ export default function Culture() {
               loading="lazy"
               sizes="(max-width: 768px) 100vw, 50vw"
               className="w-full h-[400px] md:h-[550px] object-cover transition-all duration-700 grayscale hover:grayscale-0 [@media(hover:none)]:grayscale-0"
+               style={{ aspectRatio: "700/800" }}
             />
           </div>
 

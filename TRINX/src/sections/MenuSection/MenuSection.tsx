@@ -158,6 +158,7 @@ export default function MenuSection() {
                   loading="lazy"
                   sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className={IMAGE_CLASSES}
+                  style={{ aspectRatio: "300/400" }}
                 />
                 <div className={SHADE_CLASSES} />
                 <span className={SHADE_TEXT_CLASSES}>View product</span>

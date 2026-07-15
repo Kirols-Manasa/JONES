@@ -222,17 +222,17 @@ function ProductCardMobile({
         className="flex items-center justify-center flex-shrink-0"
         style={{ height: "clamp(200px, 45vh, 55vh)" }}
       >
-        <Image
-          src={product.image}
-          alt={product.flavor}
-          width={400}
-          height={600}
-          quality={80}
-          sizes="(max-width: 768px) 90vw, 400px"
-          loading="lazy"
-          className="object-contain w-auto h-full"
-          style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))" }}
-        />
+     <Image
+  src={product.image}
+  alt={product.flavor}
+  width={400}
+  height={600}
+  quality={80}
+  sizes="(max-width: 768px) 90vw, 400px"
+  loading="lazy"
+  className="object-contain w-auto h-full"
+  style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))", aspectRatio: "400/600" }}
+/>
       </div>
 
       {/* TEXT */}
@@ -326,17 +326,17 @@ function ProductCardDesktop({
 
       {/* RIGHT — IMAGE */}
       <div className="flex items-center justify-center h-full" style={{ padding: "clamp(24px, 4vh, 60px) 0" }}>
-        <Image
-          src={product.image}
-          alt={product.flavor}
-          width={400}
-          height={600}
-          quality={80}
-          sizes="(max-width: 768px) 90vw, 400px"
-          loading="lazy"
-          className="object-contain w-auto"
-          style={{ height: "clamp(200px, 60vh, 75vh)", filter: "drop-shadow(0 32px 56px rgba(0,0,0,0.15))" }}
-        />
+       <Image
+  src={product.image}
+  alt={product.flavor}
+  width={400}
+  height={600}
+  quality={80}
+  sizes="(max-width: 768px) 90vw, 400px"
+  loading="lazy"
+  className="object-contain w-auto"
+  style={{ height: "clamp(200px, 60vh, 75vh)", filter: "drop-shadow(0 32px 56px rgba(0,0,0,0.15))", aspectRatio: "400/600" }}
+/>
       </div>
 
     </div>

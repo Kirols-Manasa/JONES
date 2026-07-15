@@ -110,6 +110,7 @@ export default function Hero() {
                 height={1050}
                 priority
                 className="object-contain w-auto h-full max-w-full max-h-full max-sm:h-[90%]"
+              style={{ aspectRatio: "700/1050" }}
               />
             </div>
           </div>
