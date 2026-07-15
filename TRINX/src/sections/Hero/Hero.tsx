@@ -67,7 +67,7 @@ export default function Hero() {
                     style={{ clipPath: "inset(0 100% 0 0)" }}
                     className="block [mask-image:linear-gradient(to_right,#000_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,#000_85%,transparent_100%)]"
                   >
-                    MADE FOR
+                    MADE FOR kirols
                   </span>
                 </span>
                 <span className="block overflow-hidden">
