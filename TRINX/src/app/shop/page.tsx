@@ -22,7 +22,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "Bright, tangy, and refreshingly bold. A summer classic brewed with real berry extracts and a squeeze of lemonade.",
     notes: ["Natural flavors", "No preservatives", "Cane sugar sweetened"],
-    image: "/images/berry-blue.png",
+    image: "/images/berry-blue.webp",
   },
   {
     name: "JONES",
@@ -32,7 +32,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "A smooth, classic root beer with hints of vanilla and anise. The kind your grandparents wished they had.",
     notes: ["Caffeine-free", "Aged vanilla extract", "Cane sugar sweetened"],
-    image: "/images/chocolate.png",
+    image: "/images/chocolate.webp",
   },
   {
     name: "JONES",
@@ -42,7 +42,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "Crisp, tart, and impossibly refreshing. Made with real green apple juice for a flavor that actually tastes like the fruit.",
     notes: ["Real apple juice", "No artificial colors", "Cane sugar sweetened"],
-    image: "/images/green.png",
+    image: "/images/green.webp",
   },
   {
     name: "JONES",
@@ -52,7 +52,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "Ripe strawberries meet zesty lime in a sparkling balance that's equal parts sweet and citrusy.",
     notes: ["Real fruit extracts", "No preservatives", "Cane sugar sweetened"],
-    image: "/images/red.png",
+    image: "/images/red.webp",
   },
   {
     name: "JONES",
@@ -62,7 +62,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "The nostalgia of an orange creamsicle, bottled. Velvety smooth with a bright citrus finish.",
     notes: ["Cream base blend", "Natural orange oils", "Cane sugar sweetened"],
-    image: "/images/orange.png",
+    image: "/images/orange.webp",
   },
   {
     name: "JONES",
@@ -72,7 +72,7 @@ const PRODUCTS = [
     price: "$29.99",
     desc: "Pure, velvety cream soda with a delicate vanilla warmth. Simple, indulgent, and endlessly drinkable.",
     notes: ["Madagascar vanilla", "Smooth finish", "Cane sugar sweetened"],
-    image: "/images/cream-white.png",
+    image: "/images/cream-white.webp",
   },
 ];
 
