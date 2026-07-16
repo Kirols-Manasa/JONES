@@ -101,7 +101,7 @@ export default function Hero() {
           </div>
 
           {/* RIGHT: IMAGE */}
-          <div className="flex items-center justify-center w-full h-[45vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]">
+          <div className="flex items-center justify-center w-full h-[60vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]">
             <div className="flex items-center justify-center w-full h-full">
               <Image
                 src="/images/cream-white.webp"

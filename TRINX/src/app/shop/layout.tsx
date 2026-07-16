@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "JONES-SHOP",
+  title: "SHOP",
   description: "Six handcrafted soda flavors in real glass bottles. Cane sugar, real fruit, no shortcuts.",
   keywords: ["jones soda", "craft soda", "glass bottle", "cane sugar"],
   authors: [{ name: "JONES Soda Co." }],
