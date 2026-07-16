@@ -165,11 +165,11 @@ export default function Vibe() {
       </p>
 
       <div ref={ctaRef} style={{ opacity: 0, transform: "translateY(20px)" }}>
-        <Link href="/community">
-          <button className="inline-block border-[3px] border-white text-white text-label-sm uppercase tracking-widest px-8 py-4 rounded-[2.5px] hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer">
-            Join the Community
-          </button>
-        </Link>
+        <div>
+  <button className="inline-block border-[3px] border-white text-white text-label-sm uppercase tracking-widest px-8 py-4 rounded-[2.5px] hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer">
+    Join the Community
+  </button>
+</div>
       </div>
 
     </div>

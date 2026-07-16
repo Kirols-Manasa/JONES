@@ -225,7 +225,7 @@ export default function Formula() {
   return (
     <>
       {/* VIDEO SECTION */}
-      <section ref={videoSectionRef} className="relative w-full h-[140vh] bg-white">
+      <section ref={videoSectionRef} className="relative w-full h-[100vh] bg-white">
         <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
           <div
             ref={videoWrapRef}
