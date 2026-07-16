@@ -68,7 +68,7 @@ export default function Nutrition() {
   return (
     <section ref={sectionRef} className="w-full bg-white py-12 sm:py-16">
       <Container>
-        <div className="grid grid-cols-4 divide-x divide-black/10 text-center w-full overflow-hidden">
+         <div className="grid grid-cols-4 divide-x divide-black/10 text-center w-full overflow-hidden">
           {stats.map(({ display, suffix, label }) => (
             <div
               key={label}

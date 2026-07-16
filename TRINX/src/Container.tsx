@@ -17,7 +17,7 @@ export default function Container({ children, className = "" }: ContainerProps) 
       className={`
         w-full
         mx-auto
-        max-w-[1440px]
+        max-w-[2560px]
         px-4        /* Mobile margin   = 16px */
         sm:px-10    /* Tablet margin   = 40px */
         lg:px-20    /* Desktop margin  = 80px */

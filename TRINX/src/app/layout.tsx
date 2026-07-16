@@ -7,7 +7,7 @@ import GridOverlayFONT from "@/GridOverlayFONT";
 import Intro from "@/intro";
 import PageTransition from "@/PageTransitionRout";
 import HoverMouse from "@/hoverMous";
-import CustomScrollbar from "@/baarscroll";
+ 
 
 import { type Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
@@ -52,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" style={{ scrollbarGutter: "stable" }}>
+     <html lang="en">
       <body className={hankenGrotesk.className}>
         <Intro />
         <LinesScroll>
@@ -64,7 +64,7 @@ export default function RootLayout({
           {process.env.NODE_ENV === "development" && <GridOverlayFONT />}
         </LinesScroll>
         <HoverMouse />
-        <CustomScrollbar />
+      
       </body>
     </html>
   );

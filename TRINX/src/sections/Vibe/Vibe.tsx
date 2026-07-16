@@ -132,7 +132,7 @@ export default function Vibe() {
 
        <div className="relative z-10 flex items-center min-h-screen">
   <Container>
-    <div className="flex flex-col gap-6 max-w-xl">
+     <div className="flex flex-col gap-6 max-w-full">
       
       <Link href="/community">
         <span

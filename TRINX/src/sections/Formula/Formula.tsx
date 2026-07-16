@@ -259,10 +259,11 @@ export default function Formula() {
               What&apos;s Inside
             </span>
             {/* تقسيم الحروف هنا مباشرة في الـ JSX لمنع الـ CLS */}
-            <h2
-              ref={headerTitleRef}
-              className="text-display text-black leading-tight whitespace-nowrap"
-            >
+         <h2
+  ref={headerTitleRef}
+  className="text-black leading-tight whitespace-nowrap"
+  style={{ fontSize: "clamp(50px, 8vw, 72px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.1 }}
+>
               {titleText.split("").map((char, index) =>
                 char === " " ? (
                   <span key={index} style={{ display: "inline-block" }}>

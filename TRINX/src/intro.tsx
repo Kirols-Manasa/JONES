@@ -322,21 +322,18 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
     </div>
   )
 }
-
  export default function Intro() {
-  const [show, setShow] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return !sessionStorage.getItem('introDone')
-  })
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    setShow(true)
+  }, [])
 
   if (!show) return null
 
   return (
     <BeverageIntroInner
-      onDone={() => {
-        sessionStorage.setItem('introDone', '1')
-        setShow(false)
-      }}
+      onDone={() => setShow(false)}
     />
   )
 }
