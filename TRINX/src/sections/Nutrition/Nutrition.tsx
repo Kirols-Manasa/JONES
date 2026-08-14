@@ -2,10 +2,6 @@
 
 import Container from "@/Container";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const stats = [
   { value: 6,   display: "6",    suffix: "",  label: "Core Flavors"  },
@@ -18,57 +14,74 @@ export default function Nutrition() {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const valueEls = sectionRef.current?.querySelectorAll<HTMLElement>("[data-stat-value]");
-      const labelEls = sectionRef.current?.querySelectorAll<HTMLElement>("[data-stat-label]");
+    let ctx: any;
+    let isMounted = true;
 
-      valueEls?.forEach((el, i) => {
-        const target = stats[i]!.value;
-        const suffix = stats[i]!.suffix;
-        const obj = { val: 0 };
+    (async () => {
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
 
-        gsap.fromTo(el,
-          { opacity: 0, skewX: -20, x: -20 },
-          {
-            opacity: 1, skewX: 0, x: 0,
-            duration: 0.7,
-            ease: "power3.out",
-            delay: i * 0.15,
-            scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-          }
-        );
+      if (!isMounted) return;
 
-        gsap.to(obj, {
-          val: target,
-          duration: 1.6,
-          ease: "power2.out",
-          delay: i * 0.15,
-          onUpdate: () => { el.textContent = Math.round(obj.val) + suffix; },
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        });
-      });
+      gsap.registerPlugin(ScrollTrigger);
 
-      labelEls?.forEach((el, i) => {
-        gsap.fromTo(el,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 0.4,
+      ctx = gsap.context(() => {
+        const valueEls = sectionRef.current?.querySelectorAll<HTMLElement>("[data-stat-value]");
+        const labelEls = sectionRef.current?.querySelectorAll<HTMLElement>("[data-stat-label]");
+
+        valueEls?.forEach((el, i) => {
+          const target = stats[i]!.value;
+          const suffix = stats[i]!.suffix;
+          const obj = { val: 0 };
+
+          gsap.fromTo(el,
+            { opacity: 0, skewX: -20, x: -20 },
+            {
+              opacity: 1, skewX: 0, x: 0,
+              duration: 0.7,
+              ease: "power3.out",
+              delay: i * 0.15,
+              scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+            }
+          );
+
+          gsap.to(obj, {
+            val: target,
+            duration: 1.6,
             ease: "power2.out",
-            delay: i * 0.15 + 0.5,
+            delay: i * 0.15,
+            onUpdate: () => { el.textContent = Math.round(obj.val) + suffix; },
             scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-          }
-        );
-      });
-    }, sectionRef);
+          });
+        });
 
-    return () => ctx.revert();
+        labelEls?.forEach((el, i) => {
+          gsap.fromTo(el,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.4,
+              ease: "power2.out",
+              delay: i * 0.15 + 0.5,
+              scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+            }
+          );
+        });
+      }, sectionRef);
+    })();
+
+    return () => {
+      isMounted = false;
+      ctx?.revert();
+    };
   }, []);
 
   return (
     <section ref={sectionRef} className="w-full bg-white py-12 sm:py-16">
       <Container>
-         <div className="grid grid-cols-4 divide-x divide-black/10 text-center w-full overflow-hidden">
+        <div className="grid grid-cols-4 divide-x divide-black/10 text-center w-full overflow-hidden">
           {stats.map(({ display, suffix, label }) => (
             <div
               key={label}
@@ -77,14 +90,16 @@ export default function Nutrition() {
               <span
                 data-stat-value
                 data-suffix={suffix}
-                style={{ opacity: 0, transform: "skewX(-20deg) translateX(-20px)" }}
+                // ✅ أضفنا willChange
+                style={{ opacity: 0, transform: "skewX(-20deg) translateX(-20px)", willChange: "opacity, transform" }}
                 className="text-[32px] md:text-headline-lg text-black leading-none tracking-tight"
               >
                 {display}
               </span>
               <span
                 data-stat-label
-                style={{ opacity: 0 }}
+                // ✅ أضفنا willChange
+                style={{ opacity: 0, willChange: "opacity" }}
                 className="text-label-sm uppercase tracking-widest text-gray-400 leading-tight"
               >
                 {label}

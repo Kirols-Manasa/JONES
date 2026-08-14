@@ -253,11 +253,13 @@ export default function Formula() {
           <div className="flex flex-col gap-2 mb-10 md:mb-14">
             {/* تحسين التباين هنا لتصبح text-gray-600 بدلاً من text-gray-400 */}
             <span
-              ref={headerEyebrowRef}
-              className="text-label-sm uppercase tracking-widest text-gray-600"
-            >
-              What&apos;s Inside
-            </span>
+  ref={headerEyebrowRef}
+  // ✅ أضفنا willChange
+  style={{ opacity: 0, willChange: "opacity, transform" }}
+  className="text-label-sm uppercase tracking-widest text-gray-600"
+>
+  What&apos;s Inside
+</span>
             {/* تقسيم الحروف هنا مباشرة في الـ JSX لمنع الـ CLS */}
          <h2
   ref={headerTitleRef}

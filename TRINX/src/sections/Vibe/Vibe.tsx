@@ -130,51 +130,58 @@ export default function Vibe() {
 
       <div ref={overlayRef} className="absolute inset-0 bg-black" style={{ opacity: 0.15 }} />
 
-       <div className="relative z-10 flex items-center min-h-screen">
-  <Container>
-     <div className="flex flex-col gap-6 max-w-full">
-      
-      <Link href="/community">
-        <span
-          ref={eyebrowRef}
-          style={{ opacity: 0, transform: "translateY(20px)" }}
-          className="text-label-sm uppercase tracking-widest text-white/75 cursor-pointer hover:text-white transition-colors duration-300"
-        >
-          Culture & Community
-        </span>
-      </Link>
+      <div className="relative z-10 flex items-center min-h-screen">
+        <Container>
+          <div className="flex flex-col gap-6 max-w-full">
 
-      <h2
-        ref={headlineRef}
-        style={{ opacity: 0, transform: "translateY(60px)" }}
-        className="text-display text-white"
-      >
-        SODA FOR THE
-        <br />
-        REAL ONES.
-      </h2>
+            <Link href="/community">
+              <span
+                ref={eyebrowRef}
+                // ✅ أضفنا willChange
+                style={{ opacity: 0, transform: "translateY(20px)", willChange: "opacity, transform" }}
+                className="text-label-sm uppercase tracking-widest text-white/75 cursor-pointer hover:text-white transition-colors duration-300"
+              >
+                Culture & Community
+              </span>
+            </Link>
 
-      <p
-        ref={bodyRef}
-        style={{ opacity: 0, transform: "translateY(25px)" }}
-        className="text-body-lg text-white/70 max-w-[500px]"
-      >
-        Jones isn&apos;t just what you drink — it&apos;s who you are. From skate
-        parks to beach days, our bottles belong wherever life gets
-        interesting. We celebrate the unique, the weird, and the authentic.
-      </p>
+            <h2
+              ref={headlineRef}
+              // ✅ أضفنا willChange
+              style={{ opacity: 0, transform: "translateY(60px)", willChange: "opacity, transform" }}
+              className="text-display text-white"
+            >
+              SODA FOR THE
+              <br />
+              REAL ONES.
+            </h2>
 
-      <div ref={ctaRef} style={{ opacity: 0, transform: "translateY(20px)" }}>
-        <div>
-  <button className="inline-block border-[3px] border-white text-white text-label-sm uppercase tracking-widest px-8 py-4 rounded-[2.5px] hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer">
-    Join the Community
-  </button>
-</div>
+            <p
+              ref={bodyRef}
+              // ✅ أضفنا willChange
+              style={{ opacity: 0, transform: "translateY(25px)", willChange: "opacity, transform" }}
+              className="text-body-lg text-white/70 max-w-[500px]"
+            >
+              Jones isn&apos;t just what you drink — it&apos;s who you are. From skate
+              parks to beach days, our bottles belong wherever life gets
+              interesting. We celebrate the unique, the weird, and the authentic.
+            </p>
+
+            <div
+              ref={ctaRef}
+              // ✅ أضفنا willChange
+              style={{ opacity: 0, transform: "translateY(20px)", willChange: "opacity, transform" }}
+            >
+              <div>
+                <button className="inline-block border-[3px] border-white text-white text-label-sm uppercase tracking-widest px-8 py-4 rounded-[2.5px] hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer">
+                  Join the Community
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </Container>
       </div>
-
-    </div>
-  </Container>
-</div>
     </section>
   );
 }
