@@ -67,7 +67,7 @@ export default function Hero() {
                     style={{ clipPath: "inset(0 100% 0 0)" }}
                     className="block [mask-image:linear-gradient(to_right,#000_85%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,#000_85%,transparent_100%)]"
                   >
-                    MADE FOR 
+                    MADE FOR
                   </span>
                 </span>
                 <span className="block overflow-hidden">
@@ -81,16 +81,22 @@ export default function Hero() {
                 </span>
               </h1>
 
+              {/* ✅ أضفنا willChange */}
               <p
                 data-hero-paragraph
-                style={{ opacity: 0 }}
+                style={{ opacity: 0, willChange: "opacity, transform" }}
                 className="text-[5vw] md:text-[2vw] lg:text-[1.4vw] font-black text-gray-500 leading-tight max-w-[52ch]"
               >
                 Cane sugar. Pure water. Bold flavor — the original craft soda since 1996.
               </p>
             </div>
 
-            <div data-hero-cta style={{ opacity: 0 }} className="mt-2">
+            {/* ✅ أضفنا willChange */}
+            <div
+              data-hero-cta
+              style={{ opacity: 0, willChange: "opacity, transform" }}
+              className="mt-2"
+            >
               <Link
                 href="/shop"
                 className="inline-block border-[4px] border-black bg-black text-white px-8 py-3.5 uppercase tracking-widest hover:bg-white hover:text-black transition"
@@ -103,14 +109,17 @@ export default function Hero() {
           {/* RIGHT: IMAGE */}
           <div className="flex items-center justify-center w-full h-[60vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]">
             <div className="flex items-center justify-center w-full h-full">
+              {/* ✅ أضفنا quality و sizes */}
               <Image
                 src="/images/cream-white.webp"
                 alt="Jones Soda Bottle"
                 width={700}
                 height={1050}
                 priority
+                quality={85}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-contain w-auto h-full max-w-full max-h-full max-sm:h-[90%]"
-              style={{ aspectRatio: "700/1050" }}
+                style={{ aspectRatio: "700/1050" }}
               />
             </div>
           </div>

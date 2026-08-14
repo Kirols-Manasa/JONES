@@ -12,7 +12,6 @@ function easeInOutExpo(t: number): number {
   return (2 - Math.pow(2, -20 * t + 10)) / 2
 }
 
-// ⚡ دقة داخلية أقل للـ noise canvas (هيتكبّر بالـ CSS للحجم الفعلي)
 const NOISE_SCALE = 6
 
 type Bubble = {
@@ -44,7 +43,7 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
   const canvasSizeRef = useRef({ w: 0, h: 0 })
   const tagVisibleRef = useRef(false)
 
-  const DURATION = 2000
+  const DURATION =  1050
 
   const drawNoise = useCallback(() => {
     const canvas = canvasRef.current
@@ -106,9 +105,10 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
         window.dispatchEvent(new Event('introDone'))
         document.documentElement.dataset.introDone = 'true'
 
+        // ✅ قلناها من 1200 لـ 400
         setTimeout(() => {
           onDone()
-        }, 1200)
+        }, 400)
       }, 350)
     }, 200)
   }, [onDone])
@@ -132,9 +132,6 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
       const easedT = easeInOutExpo(rawT)
       const pct = Math.round(easedT * 100)
 
-      // ⚡ تحديث مباشر على الـ DOM بدل setState — بيلغي عشرات
-      // الـ re-renders خلال الـ 2 ثانية دول، وده أكبر مصدر لتقليل
-      // الـ Total Blocking Time جوه الانترو
       if (countRef.current) countRef.current.textContent = String(pct)
       if (fillRef.current) fillRef.current.style.height = easedT * 100 + '%'
 
@@ -322,7 +319,8 @@ function BeverageIntroInner({ onDone }: { onDone: () => void }) {
     </div>
   )
 }
- export default function Intro() {
+
+export default function Intro() {
   const [show, setShow] = useState(false)
 
   useEffect(() => {

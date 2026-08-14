@@ -142,7 +142,7 @@ export default function MenuSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {PRODUCTS.map((product) => (
+           {PRODUCTS.map((product, index) => (
             <Link
               key={product.slug}
               href={`${SHOP_HREF}#${product.slug}`}
@@ -151,15 +151,17 @@ export default function MenuSection() {
             >
               <div className={IMAGE_WRAP_CLASSES}>
                 <Image
-                  src={product.image}
-                  alt={product.flavor}
-                  width={300}
-                  height={400}
-                  loading="lazy"
-                  sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className={IMAGE_CLASSES}
-                  style={{ aspectRatio: "300/400" }}
-                />
+  src={product.image}
+  alt={product.flavor}
+  width={300}
+  height={400}
+  loading={index === 0 ? "eager" : "lazy"}
+  priority={index === 0}
+  quality={85}
+  sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
+  className={IMAGE_CLASSES}
+  style={{ aspectRatio: "300/400" }}
+/>
                 <div className={SHADE_CLASSES} />
                 <span className={SHADE_TEXT_CLASSES}>View product</span>
                 <span className={RIBBON_CLASSES}>Shop now</span>
@@ -179,7 +181,7 @@ export default function MenuSection() {
             </Link>
           ))}
         </div>
-      </Container>
+      </Container>Set-Content .gitignore "node_modules/`n.env`n.env.local`n.next/`ndist/"
     </section>
   );
 }
