@@ -108,7 +108,7 @@ export default function Hero() {
 
           {/* RIGHT: IMAGE */}
           <div className="flex items-center justify-center w-full h-[60vh] sm:h-[55vh] md:h-[75vh] lg:h-[85vh]">
-         <div className="flex items-center justify-center w-full h-full" style={{ position: "relative", zIndex: 10000 }}>
+            <div className="flex items-center justify-center w-full h-full">
               {/* ✅ أضفنا quality و sizes */}
               <Image
                 src="/images/cream-white.webp"
