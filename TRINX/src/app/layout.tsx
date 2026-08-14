@@ -14,22 +14,37 @@ import { Hanken_Grotesk } from "next/font/google";
 export const metadata: Metadata = {
   title: "JONES-SODA",
   description: "Made with pure cane sugar and featuring bold, unique flavors. Jones Soda is a one-of-a-kind premium craft soda known for its ever-changing labels since 1996.",
-  keywords: ["jones soda", "craft soda", "cane sugar soda", "premium soda", "berry lemonade", "cream soda", "green apple soda"],
-  authors: [{ name: "Jones Soda Co.", url: "https://www.jonessoda.com" }],
+  keywords: [
+    "kirols soda",
+    "kirols jones",
+    "kirols jones soda",
+    "kirols craft soda",
+    "kirols",
+    "jones soda",
+    "craft soda",
+    "cane sugar soda",
+    "premium soda",
+    "berry lemonade",
+    "cream soda",
+    "green apple soda",
+  ],
+  authors: [{ name: "Kirols", url: "https://jones-ten.vercel.app" }],
   icons: { icon: "/favicon.ico" },
   openGraph: {
     title: "Jones Soda Co. | The Original Craft Soda",
     description: "Made with pure cane sugar and featuring bold, unique flavors. Jones Soda is a one-of-a-kind premium craft soda known for its ever-changing labels since 1996.",
     url: "https://jones-ten.vercel.app",
     siteName: "Jones Soda Co.",
-    images: [{ url: "/images/soda-CreamSoda.webp", width: 1200, height: 630 }],
+    // ✅ غيرنا الصورة لـ mata.webp
+    images: [{ url: "/images/mata.webp", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Jones Soda Co. | The Original Craft Soda",
     description: "Made with pure cane sugar and featuring bold, unique flavors. Jones Soda is a one-of-a-kind premium craft soda known for its ever-changing labels since 1996.",
-    images: ["/images/soda-CreamSoda.webp"],
+    // ✅ غيرنا الصورة لـ mata.webp
+    images: ["/images/mata.webp"],
   },
   robots: { index: true, follow: true },
 };
@@ -53,7 +68,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           {process.env.NODE_ENV === "development" && <GridOverlayFONT />}
         </LinesScroll>
-        {/* ✅ HoverMouse lazy loaded */}
         <ClientOnly />
       </body>
     </html>
